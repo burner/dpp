@@ -115,12 +115,26 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra --std=c++0x")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O1")
 
-add_library(dppcommon SHARED ${GenCommon} ${common_sources} ${common_header})
-add_library(dppvisitor SHARED ${GenVisitor} ${dppcommon})
-add_library(dppparser SHARED ${GenParser} ${dppcommon} ${parser_sources} 
+add_library(dppcommon SHARED ${GenCommon} 
+	${common_sources} 
+	${common_header}
+)
+
+add_library(dppvisitor SHARED ${GenVisitor} 
+	${dppcommon}
+)
+
+add_library(dppparser SHARED ${GenParser} 
+	${dppcommon} 
+	${parser_sources} 
 	${parser_header}
 )
-add_library(dpplexer SHARED ${lexer_sources} ${lexer_header} ${dppcommon})
+
+add_library(dpplexer SHARED 
+	${lexer_sources} 
+	${lexer_header} 
+	${dppcommon}
+)
 
 add_executable(dpp ${dpp_sources})
 target_link_libraries(dpp dppcommon dppvisitor dppparser dpplexer)
