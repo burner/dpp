@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 2.8.12)
 
-## thats our project
 project(dpp)
 
 if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../sweet.hpp)
 else()
-message(fatel_error "The sweet.hpp folder needs to be located on the same level as the dpp folder")
+message(fatel_error 
+"The sweet.hpp folder needs to be located on the same level as the dpp folder")
 endif()
 
 # if INCLUDE_TESTS is true than tests are compiled into the library
@@ -53,7 +53,6 @@ SET(RecdeGenOutput
 
 ADD_CUSTOM_COMMAND(
   OUTPUT ${RecdeGenOutput}
-  #SOURCE ${CMAKE_SOURCE_DIR}/dpp.js
   COMMAND ../sweet.hpp/recde/build/recde -i dpp.js
 	-ps ${CMAKE_SOURCE_DIR}/src/parser/parser.cpp
 	-ph ${CMAKE_SOURCE_DIR}/src/parser/parser.hpp
@@ -92,6 +91,14 @@ set(common_header
 	src/common/location.hpp
 )
 
+# parser library
+set(parser_sources 
+	src/parser/parsertest1.cpp
+)
+
+set(parser_header 
+)
+
 # lexer library
 set(lexer_sources 
 	src/lexer/lexer.cpp
@@ -103,26 +110,17 @@ set(lexer_header
 	src/lexer/numberconv.hpp
 )
 
-add_library(dppcommon SHARED ${GenCommon} ${common_sources} ${common_header})
-add_library(dppvisitor SHARED ${GenVisitor})
-add_library(dppparser SHARED ${GenParser})
-add_library(dpplexer SHARED ${lexer_sources} ${lexer_header})
-
 ## we love c++0x and a chatty compiler that comments on our code
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -ggdb --std=c++0x")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra --std=c++0x")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O1")
 
-#if(${INCLUDE_TESTS} MATCHES "true")
-#	add_library(libdpp SHARED ${libdpp_sources} ${libdpp_headers}
-#		${libdpp_test_sources} )
-#else()
-#	add_library(libdpp SHARED ${libdpp_sources} ${libdpp_headers} )
-#endif()
-
-#add_dependencies(dpp
-#	ParserGenerator
-#)
-
-#set_target_properties(libdpp PROPERTIES PREFIX "")
+add_library(dppcommon SHARED ${GenCommon} ${common_sources} ${common_header})
+add_library(dppvisitor SHARED ${GenVisitor} ${dppcommon})
+add_library(dppparser SHARED ${GenParser} ${dppcommon} ${parser_sources} 
+	${parser_header}
+)
+add_library(dpplexer SHARED ${lexer_sources} ${lexer_header} ${dppcommon})
 
 add_executable(dpp ${dpp_sources})
 target_link_libraries(dpp dppcommon dppvisitor dppparser dpplexer)
