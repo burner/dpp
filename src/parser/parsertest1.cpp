@@ -3,6 +3,7 @@
 #include <unit.hpp>
 #include <outvisitor.hpp>
 #include <dotvisitor.hpp>
+#include <llvmvisitor.hpp>
 
 UNITTEST(rel1) {
 	auto ss = std::make_shared<std::stringstream>
@@ -130,8 +131,10 @@ UNITTEST(unary1) {
 	StdOutVisitor v(std::cout);
 	std::ofstream z("test.dot");
 	DotVisitor d(z);
+	LLVMVisitor ll;
 	ast->acceptVisitor(d);
 	std::cout<<std::endl;
 	ast->acceptVisitor(v);
 	std::cout<<std::endl;
+	ast->acceptVisitor(ll);
 }
