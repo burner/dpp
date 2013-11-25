@@ -1,6 +1,8 @@
 #include <ast.hpp>
 #include <llvmvisitor.hpp>
 
+#include <unit.hpp>
+
 LLVMVisitor::LLVMVisitor() : 
 		module(new llvm::Module("main", llvm::getGlobalContext())) 
 {
@@ -187,3 +189,23 @@ bool LLVMVisitor::visitPrimaryExpression(const PrimaryExpression*) { return true
 
 bool LLVMVisitor::leavePrimaryExpression(PrimaryExpression*) { return true; }
 bool LLVMVisitor::leavePrimaryExpression(const PrimaryExpression*) { return true; }
+
+bool LLVMVisitor::visitDecl(Decl*) {
+	ASSERT_T_MSG(false, "LLVMVisitor::visitDecl(Decl*) not implemented");
+	return false;
+}
+
+bool LLVMVisitor::visitDecl(const Decl*) {
+	ASSERT_T_MSG(false, "LLVMVisitor::visitDecl(const Decl*) not implemented");
+	return false;
+}
+
+bool LLVMVisitor::leaveDecl(Decl*) {
+	ASSERT_T_MSG(false, "LLVMVisitor::leaveDecl(Decl*) not implemented");
+	return false;
+}
+
+bool LLVMVisitor::leaveDecl(const Decl*) {
+	ASSERT_T_MSG(false, "LLVMVisitor::leaveDecl(const Decl*) not implemented");
+	return false;
+}

@@ -64,6 +64,12 @@
 			{ "Rule" : "Expression(start)", "Id" : "Start" }
 			]
 		},
+		{ "Name" : "Decl", "Expression" : [
+			{ "Rule" : "FunctionDecl(func)", "Id" : "Function"}
+			{ "Rule" : "FunctionPrototypeDecl(funcDecl)", 
+				"Id" : "FunctionDecl"}
+			]
+		},
 		{ "Name" : "FunctionDecl", "Expression" : [
 			{ "Rule" : "FunctionPrototypeDecl(decl) ; BlockStatement(statements)", 
 				"Id" : "FunctionWithBlockStmt" }

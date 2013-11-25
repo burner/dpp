@@ -47,33 +47,45 @@ include_directories("src/lexer")
 include_directories("src/llvmbackend")
 include_directories("src/")
 
-SET(GenCommon
-	${CMAKE_SOURCE_DIR}/src/visitorinclude
+SET(GenCommonSource
 	${CMAKE_SOURCE_DIR}/src/common/ast.cpp
-	${CMAKE_SOURCE_DIR}/src/common/ast.hpp
 	${CMAKE_SOURCE_DIR}/src/common/error.cpp
+	${CMAKE_SOURCE_DIR}/src/common/multivisitor.cpp
+)
+
+SET(GenCommonHeader
+	${CMAKE_SOURCE_DIR}/src/visitorinclude
+	${CMAKE_SOURCE_DIR}/src/common/ast.hpp
 	${CMAKE_SOURCE_DIR}/src/common/error.hpp
 	${CMAKE_SOURCE_DIR}/src/common/visitor.hpp
-	${CMAKE_SOURCE_DIR}/src/common/multivisitor.cpp
 	${CMAKE_SOURCE_DIR}/src/common/multivisitor.hpp
 )
 
-SET(GenVisitor
+SET(GenVisitorSource
 	${CMAKE_SOURCE_DIR}/src/common/outvisitor.cpp
-	${CMAKE_SOURCE_DIR}/src/common/outvisitor.hpp
 	${CMAKE_SOURCE_DIR}/src/common/dotvisitor.cpp
+)
+
+SET(GenVisitorHeader
+	${CMAKE_SOURCE_DIR}/src/common/outvisitor.hpp
 	${CMAKE_SOURCE_DIR}/src/common/dotvisitor.hpp
 )
 
-SET(GenParser
+SET(GenParserSource
 	${CMAKE_SOURCE_DIR}/src/parser/parser.cpp
+)
+
+SET(GenParserHeader
 	${CMAKE_SOURCE_DIR}/src/parser/parser.hpp
 )
 
 SET(RecdeGenOutput
-	${GenCommon}
-	${GenVisitor}
-	${GenParser}
+	${GenCommonSource}
+	${GenVisitorSource}
+	${GenParserSource}
+	${GenCommonHeader}
+	${GenVisitorHeader}
+	${GenParserHeader}
 )
 
 ADD_CUSTOM_COMMAND(
@@ -109,12 +121,16 @@ set(dpp_sources
 # common library
 set(common_sources 
 	src/common/token.cpp
+	src/common/symboltable.cpp
+	src/common/symboltablevisitor.cpp
 	src/common/location.cpp
 )
 
 set(common_header 
-	src/common/token.hpp
 	src/common/location.hpp
+	src/common/symboltable.hpp
+	src/common/symboltablevisitor.hpp
+	src/common/token.hpp
 )
 
 # parser library
@@ -150,16 +166,16 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic --std=c++0x")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O1")
 
-add_library(dppcommon SHARED ${GenCommon} 
+add_library(dppcommon SHARED ${GenCommonSource} ${GenCommonHeader}
 	${common_sources} 
 	${common_header}
 )
 
-add_library(dppvisitor SHARED ${GenVisitor} 
+add_library(dppvisitor SHARED ${GenVisitorSource} ${GenVisitorHeader}
 	${dppcommon}
 )
 
-add_library(dppparser SHARED ${GenParser} 
+add_library(dppparser SHARED ${GenParserSource} ${GenParserHeader}
 	${dppcommon} 
 	${parser_sources} 
 	${parser_header}
@@ -171,7 +187,7 @@ add_library(dpplexer SHARED
 	${dppcommon}
 )
 
-add_library(dppllvm SHARED ${GenCommon}
+add_library(dppllvm SHARED ${GenCommonHeader}
 	${llvm_sources}
 	${llvm_header}
 	${dppcommon}
