@@ -55,5 +55,12 @@ SymbolTableVec SymbolTable::getFollow() {
 }
 
 bool SymbolTable::contains(const std::string& key) const {
-	return static_cast<bool>(this->map.count(SymbolTableEntry(key)));
+	bool ret = static_cast<bool>(this->map.count(SymbolTableEntry(key)));
+	if(ret) {
+		return true;
+	} else if(!ret && this->parent) {
+		return this->parent->contains(key);
+	} else if(!ret && !this->parent) {
+		return false;
+	}
 }
