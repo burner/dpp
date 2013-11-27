@@ -124,6 +124,7 @@ set(common_sources
 	src/common/symboltable.cpp
 	src/common/symboltablevisitor.cpp
 	src/common/location.cpp
+	src/common/symboltablevisitortest1.cpp
 )
 
 set(common_header 

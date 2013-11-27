@@ -12,7 +12,7 @@ UNITTEST(rel1) {
 	Parser p(l);
 	auto ast = p.parseOrOrExpression();
 	StdOutVisitor v(std::cout);
-	ast->acceptVisitor(v);
+	//ast->acceptVisitor(v);
 }
 
 UNITTEST(assign1) {
@@ -22,7 +22,7 @@ UNITTEST(assign1) {
 	Parser p(l);
 	auto ast = p.parseAssignmentExpression();
 	StdOutVisitor v(std::cout);
-	ast->acceptVisitor(v);
+	//ast->acceptVisitor(v);
 }
 
 UNITTEST(varDecl1) {
@@ -32,7 +32,7 @@ UNITTEST(varDecl1) {
 	Parser p(l);
 	auto ast = p.parseVarDecl();
 	StdOutVisitor v(std::cout);
-	ast->acceptVisitor(v);
+	//ast->acceptVisitor(v);
 }
 
 UNITTEST(varDecl2) {
@@ -42,7 +42,7 @@ UNITTEST(varDecl2) {
 	Parser p(l);
 	auto ast = p.parseVarDecl();
 	StdOutVisitor v(std::cout);
-	ast->acceptVisitor(v);
+	//ast->acceptVisitor(v);
 }
 
 UNITTEST(argList1) {
@@ -52,7 +52,7 @@ UNITTEST(argList1) {
 	Parser p(l);
 	auto ast = p.parseArgumentList();
 	StdOutVisitor v(std::cout);
-	ast->acceptVisitor(v);
+	//ast->acceptVisitor(v);
 }
 
 UNITTEST(blockStmt1) {
@@ -62,7 +62,7 @@ UNITTEST(blockStmt1) {
 	Parser p(l);
 	auto ast = p.parseStatement();
 	StdOutVisitor v(std::cout);
-	ast->acceptVisitor(v);
+	//ast->acceptVisitor(v);
 }
 UNITTEST(blockStmt2) {
 	auto ss = std::make_shared<std::stringstream>
@@ -71,7 +71,7 @@ UNITTEST(blockStmt2) {
 	Parser p(l);
 	auto ast = p.parseStatement();
 	StdOutVisitor v(std::cout);
-	ast->acceptVisitor(v);
+	//ast->acceptVisitor(v);
 }
 UNITTEST(blockStmt3) {
 	auto ss = std::make_shared<std::stringstream>
@@ -80,7 +80,7 @@ UNITTEST(blockStmt3) {
 	Parser p(l);
 	auto ast = p.parseStatement();
 	StdOutVisitor v(std::cout);
-	ast->acceptVisitor(v);
+	//ast->acceptVisitor(v);
 }
 UNITTEST(blockStmt4) {
 	auto ss = std::make_shared<std::stringstream>
@@ -89,7 +89,7 @@ UNITTEST(blockStmt4) {
 	Parser p(l);
 	auto ast = p.parseStatement();
 	StdOutVisitor v(std::cout);
-	ast->acceptVisitor(v);
+	//ast->acceptVisitor(v);
 }
 UNITTEST(iterStmt1) {
 	auto ss = std::make_shared<std::stringstream>
@@ -98,7 +98,7 @@ UNITTEST(iterStmt1) {
 	Parser p(l);
 	auto ast = p.parseStatement();
 	StdOutVisitor v(std::cout);
-	ast->acceptVisitor(v);
+	//ast->acceptVisitor(v);
 }
 UNITTEST(function1) {
 	auto ss = std::make_shared<std::stringstream>
@@ -107,7 +107,7 @@ UNITTEST(function1) {
 	Parser p(l);
 	auto ast = p.parseFunctionDecl();
 	StdOutVisitor v(std::cout);
-	ast->acceptVisitor(v);
+	//ast->acceptVisitor(v);
 }
 UNITTEST(function2) {
 	auto ss = std::make_shared<std::stringstream>
@@ -117,9 +117,9 @@ UNITTEST(function2) {
 	auto ast = p.parseFunctionDecl();
 	std::ofstream z("test2.dot");
 	DotVisitor d(z);
-	ast->acceptVisitor(d);
+	//ast->acceptVisitor(d);
 	StdOutVisitor v(std::cout);
-	ast->acceptVisitor(v);
+	//ast->acceptVisitor(v);
 }
 
 UNITTEST(unary1) {
@@ -132,9 +132,9 @@ UNITTEST(unary1) {
 	std::ofstream z("test.dot");
 	DotVisitor d(z);
 	LLVMVisitor ll;
-	ast->acceptVisitor(d);
-	std::cout<<std::endl;
-	ast->acceptVisitor(v);
-	std::cout<<std::endl;
-	ast->acceptVisitor(ll);
+	//ast->acceptVisitor(d);
+	//std::cout<<std::endl;
+	//ast->acceptVisitor(v);
+	//std::cout<<std::endl;
+	//ast->acceptVisitor(ll);
 }

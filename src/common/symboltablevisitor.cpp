@@ -1,5 +1,6 @@
 #include <symboltablevisitor.hpp>
 #include <unit.hpp>
+#include <logger.hpp>
 
 // generic
 
@@ -10,15 +11,67 @@ SymbolTableVisitor::SymbolTableVisitor() :
 }
 
 void SymbolTableVisitor::newTableEntry() {
-	auto t(std::make_shared<SymbolTable>(this->stack.top()));
+	auto t(std::make_shared<SymbolTable>(this->stack.top().get()));
+	this->stack.top()->insertNewTable(t);
 	this->stack.push(t);
+}
+
+void SymbolTableVisitor::giveAstNodeCurrentSymbolTable(AstNode* node) {
+	node->setSymbolTable(this->stack.top().get());
+}
+
+SymbolTablePtr SymbolTableVisitor::getRoot() {
+	return this->root;
+}
+
+SymbolTableConstPtr SymbolTableVisitor::getRoot() const {
+	return this->root;
 }
 
 // visitor and leaver
 
-bool SymbolTableVisitor::visitBlockStatement(BlockStatement*) { 
-	this->newTableEntry();
+bool SymbolTableVisitor::visitBlockStatement(BlockStatement* block) { 
+	if(!this->blockStmt) {
+		this->newTableEntry();
+	}
+
+	this->giveAstNodeCurrentSymbolTable(block);
+	this->blockStmt = false;
 	return true;
+}
+
+bool SymbolTableVisitor::leaveBlockStatement(BlockStatement*) { 
+	this->stack.pop();
+	return true;
+}
+
+bool SymbolTableVisitor::visitFunctionDecl(FunctionDecl* fd) { 
+	this->stack.top()->insert(
+		fd->getDecl()->getIdentifier().value.stringValue,
+		fd->getDecl()->getIdentifier().getLocation()
+	);
+	this->blockStmt = true;
+	this->giveAstNodeCurrentSymbolTable(fd);
+
+	this->newTableEntry();
+	
+	return true; 
+}
+
+bool SymbolTableVisitor::leaveFunctionDecl(FunctionDecl*) { 
+	return true;
+}
+
+bool SymbolTableVisitor::visitFunctionDecl(const FunctionDecl*) { 
+	ASSERT_T_MSG(false, "SymbolTableVisitor::visitFunctionDecl(const Decl*)"
+		 " not implemented. This is a non-const operation");
+	return false;
+}
+
+bool SymbolTableVisitor::leaveBlockStatement(const BlockStatement*) { 
+	ASSERT_T_MSG(false, "SymbolTableVisitor::leaveBlockStatement(const Decl*)"
+		 " not implemented. This is a non-const operation");
+	return false;
 }
 
 bool SymbolTableVisitor::visitBlockStatement(const BlockStatement*) { 
@@ -27,13 +80,8 @@ bool SymbolTableVisitor::visitBlockStatement(const BlockStatement*) {
 	return false;
 }
 
-bool SymbolTableVisitor::leaveBlockStatement(BlockStatement*) { 
-	this->stack.pop();
-	return true;
-}
-
-bool SymbolTableVisitor::leaveBlockStatement(const BlockStatement*) { 
-	ASSERT_T_MSG(false, "SymbolTableVisitor::leaveBlockStatement(const Decl*)"
+bool SymbolTableVisitor::leaveFunctionDecl(const FunctionDecl*) { 
+	ASSERT_T_MSG(false, "SymbolTableVisitor::leaveFunctionDecl(const Decl*)"
 		 " not implemented. This is a non-const operation");
 	return false;
 }
@@ -116,11 +164,6 @@ bool SymbolTableVisitor::visitPostfixExpression(const PostfixExpression*) { retu
 
 bool SymbolTableVisitor::leavePostfixExpression(PostfixExpression*) { return true; }
 bool SymbolTableVisitor::leavePostfixExpression(const PostfixExpression*) { return true; }
-bool SymbolTableVisitor::visitFunctionDecl(FunctionDecl*) { return true; }
-bool SymbolTableVisitor::visitFunctionDecl(const FunctionDecl*) { return true; }
-
-bool SymbolTableVisitor::leaveFunctionDecl(FunctionDecl*) { return true; }
-bool SymbolTableVisitor::leaveFunctionDecl(const FunctionDecl*) { return true; }
 bool SymbolTableVisitor::visitAndAndExpression(AndAndExpression*) { return true; }
 bool SymbolTableVisitor::visitAndAndExpression(const AndAndExpression*) { return true; }
 

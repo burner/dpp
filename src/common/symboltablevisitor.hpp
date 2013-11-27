@@ -1,5 +1,3 @@
-// DO not MODIFY this FILE it IS generated
-
 #pragma once
 
 #include <stack>
@@ -14,10 +12,20 @@ public:
 	SymbolTableVisitor();
 	void newTableEntry();
 
+	SymbolTablePtr getRoot();
+	SymbolTableConstPtr getRoot() const;
+
 	// All visit and leave prototies
 	#include <visitorinclude>
 
 private:
-	SymbolTablePtr root;
 	SymbolTableStack stack;
+
+	// if we find a "def" don't open a new symboltable on the next opening
+	// block statement
+	bool blockStmt = false;
+
+	void giveAstNodeCurrentSymbolTable(AstNode*);
+
+	SymbolTablePtr root;
 };

@@ -5,6 +5,10 @@
 #include <dotvisitor.hpp>
 
 int main() {
-	Unit::runTests();
+	SweetLogger::enableLogger(1);
+	auto testsPassed = Unit::runTests();
+	auto numTests = Unit::getTests().size();
+	LOG(1, "Number of tests run '%u' all passed '%s'", numTests, 
+		!testsPassed ? "true" : "false");
 	return 0;
 }
