@@ -14,9 +14,11 @@ class SymbolTable;
 struct SymbolTableEntry {
 	std::string id;
 	Loc loc;
+	AstNode* astEntry;
 
 	explicit SymbolTableEntry(const std::string&);
 	explicit SymbolTableEntry(const std::string&,const Loc&);
+	explicit SymbolTableEntry(const std::string&,const Loc&, AstNode*);
 
 	bool operator<(const SymbolTableEntry) const;
 	bool operator==(const SymbolTableEntry) const;

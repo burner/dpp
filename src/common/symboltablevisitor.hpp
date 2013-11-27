@@ -9,7 +9,7 @@ typedef std::stack<SymbolTablePtr> SymbolTableStack;
 
 class SymbolTableVisitor : public Visitor {
 public:
-	SymbolTableVisitor();
+	explicit SymbolTableVisitor();
 	void newTableEntry();
 
 	SymbolTablePtr getRoot();

@@ -1,12 +1,17 @@
 #include <symboltable.hpp>
 
+SymbolTableEntry::SymbolTableEntry(const std::string& i) :
+		id(i) {
+}
+
 SymbolTableEntry::SymbolTableEntry(const std::string& i, const Loc& l) :
 		id(i), loc(l) {
 }
 
-SymbolTableEntry::SymbolTableEntry(const std::string& i) :
-		id(i) {
+SymbolTableEntry::SymbolTableEntry(const std::string& i, const Loc& l,
+		AstNode* n) : id(i), loc(l), node(node) {
 }
+
 
 bool SymbolTableEntry::operator<(const SymbolTableEntry o) const {
 	return this->id < o.id;
