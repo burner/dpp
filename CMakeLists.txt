@@ -51,6 +51,8 @@ SET(GenCommonSource
 	${CMAKE_SOURCE_DIR}/src/common/ast.cpp
 	${CMAKE_SOURCE_DIR}/src/common/error.cpp
 	${CMAKE_SOURCE_DIR}/src/common/multivisitor.cpp
+	${CMAKE_SOURCE_DIR}/src/common/visitor.cpp
+	${CMAKE_SOURCE_DIR}/src/common/lambdavisitor.cpp
 )
 
 SET(GenCommonHeader
@@ -59,6 +61,7 @@ SET(GenCommonHeader
 	${CMAKE_SOURCE_DIR}/src/common/error.hpp
 	${CMAKE_SOURCE_DIR}/src/common/visitor.hpp
 	${CMAKE_SOURCE_DIR}/src/common/multivisitor.hpp
+	${CMAKE_SOURCE_DIR}/src/common/lambdavisitor.hpp
 )
 
 SET(GenVisitorSource
@@ -97,6 +100,7 @@ ADD_CUSTOM_COMMAND(
 	-as ${CMAKE_SOURCE_DIR}/src/common/ast.cpp
 	-es ${CMAKE_SOURCE_DIR}/src/common/error.cpp
 	-eh ${CMAKE_SOURCE_DIR}/src/common/error.hpp
+	-vs ${CMAKE_SOURCE_DIR}/src/common/visitor.cpp
 	-vh ${CMAKE_SOURCE_DIR}/src/common/visitor.hpp
 	-os ${CMAKE_SOURCE_DIR}/src/common/outvisitor.cpp
 	-oh ${CMAKE_SOURCE_DIR}/src/common/outvisitor.hpp
@@ -104,6 +108,8 @@ ADD_CUSTOM_COMMAND(
 	-dh ${CMAKE_SOURCE_DIR}/src/common/dotvisitor.hpp
 	-ms ${CMAKE_SOURCE_DIR}/src/common/multivisitor.cpp
 	-mh ${CMAKE_SOURCE_DIR}/src/common/multivisitor.hpp 
+	-ls ${CMAKE_SOURCE_DIR}/src/common/lambdavisitor.cpp
+	-lh ${CMAKE_SOURCE_DIR}/src/common/lambdavisitor.hpp 
 	-in ${CMAKE_SOURCE_DIR}/src/visitorinclude
 
     WORKING_DIRECTORY ${CMAKE_SOURCE_DIR} 
@@ -123,6 +129,7 @@ set(common_sources
 	src/common/token.cpp
 	src/common/symboltable.cpp
 	src/common/symboltablevisitor.cpp
+	src/common/lambdavisitor.cpp
 	src/common/location.cpp
 	src/common/symboltablevisitortest1.cpp
 )
@@ -131,6 +138,7 @@ set(common_header
 	src/common/location.hpp
 	src/common/symboltable.hpp
 	src/common/symboltablevisitor.hpp
+	src/common/lambdavisitor.hpp
 	src/common/token.hpp
 )
 
@@ -163,7 +171,7 @@ set(llvm_header
 )
 
 # we love c++11 and a chatty compiler that comments on our code
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -pedantic --std=c++0x")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -pedantic --std=c++0x")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O1")
 

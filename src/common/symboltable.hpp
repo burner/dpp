@@ -18,7 +18,8 @@ struct SymbolTableEntry {
 
 	explicit SymbolTableEntry(const std::string&);
 	explicit SymbolTableEntry(const std::string&,const Loc&);
-	explicit SymbolTableEntry(const std::string&,const Loc&, AstNode*);
+	explicit SymbolTableEntry(const std::string&,AstNode*);
+	explicit SymbolTableEntry(const std::string&,const Loc&,AstNode*);
 
 	bool operator<(const SymbolTableEntry) const;
 	bool operator==(const SymbolTableEntry) const;
@@ -39,10 +40,15 @@ typedef std::shared_ptr<const SymbolTable> SymbolTableConstPtr;
 typedef std::vector<SymbolTablePtr> SymbolTableVec;
 typedef std::unordered_set<SymbolTableEntry> SymbolTableEntryMap;
 
+enum class SymbolTableType {
+	Ordered,
+	Unordered
+};
+
 class SymbolTable {
 public:
 	SymbolTable();
-	SymbolTable(SymbolTable*);
+	SymbolTable(SymbolTable*,SymbolTableType = SymbolTableType::Ordered);
 
 	void insert(const std::string&, const Loc&);
 
@@ -57,9 +63,11 @@ public:
 	SymbolTableVec getFollow();
 
 	bool contains(const std::string&) const;
+	SymbolTableType getType() const;
 
 private:
 	SymbolTableEntryMap map;
 	SymbolTableVec follow;
 	SymbolTable* parent;
+	SymbolTableType type;
 };

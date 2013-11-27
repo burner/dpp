@@ -1,17 +1,23 @@
 #include <symboltable.hpp>
 
 SymbolTableEntry::SymbolTableEntry(const std::string& i) :
-		id(i) {
+		id(i), astEntry(nullptr)
+{
 }
 
 SymbolTableEntry::SymbolTableEntry(const std::string& i, const Loc& l) :
-		id(i), loc(l) {
+		id(i), loc(l), astEntry(nullptr)
+{
 }
 
 SymbolTableEntry::SymbolTableEntry(const std::string& i, const Loc& l,
-		AstNode* n) : id(i), loc(l), node(node) {
+		AstNode* n) : id(i), loc(l), astEntry(n)
+{
 }
-
+SymbolTableEntry::SymbolTableEntry(const std::string& i, AstNode* n) : 
+		id(i), astEntry(n)
+{
+}
 
 bool SymbolTableEntry::operator<(const SymbolTableEntry o) const {
 	return this->id < o.id;
@@ -21,10 +27,11 @@ bool SymbolTableEntry::operator==(const SymbolTableEntry o) const {
 	return this->id == o.id;
 }
 
-SymbolTable::SymbolTable() : parent(nullptr) {
+SymbolTable::SymbolTable() : parent(nullptr), type(SymbolTableType::Ordered) {
 }
 
-SymbolTable::SymbolTable(SymbolTable* p) : parent(p) {
+SymbolTable::SymbolTable(SymbolTable* p, SymbolTableType t) : parent(p),
+		type(t) {
 }
 
 void SymbolTable::insert(const std::string& id , const Loc& l) {
@@ -65,7 +72,7 @@ bool SymbolTable::contains(const std::string& key) const {
 		return true;
 	} else if(!ret && this->parent) {
 		return this->parent->contains(key);
-	} else if(!ret && !this->parent) {
+	} else {
 		return false;
 	}
 }
