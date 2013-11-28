@@ -486,6 +486,35 @@ Token Lexer::nextToken() {
 				}
 			}
 			goto identifier;
+		case 'e':
+			if(getNextChar() == 'l') {
+				if(getNextChar() == 's') {
+					if(getNextChar() == 'e') {
+						if(isTokenStop(getNextChar())) { // else
+							readNext = false;
+							return Token(TokenType::Else, 
+								tokenLine, tokenColumn
+							);
+						}
+					}
+				}
+			} else if(curInput == 'x') {
+				if(getNextChar() == 't') {
+					if(getNextChar() == 'e') {
+						if(getNextChar() == 'r') {
+							if(getNextChar() == 'n') {
+								if(isTokenStop(getNextChar())) { // extern
+									readNext = false;
+									return Token(TokenType::Extern, 
+										tokenLine, tokenColumn
+									);
+								}
+							}
+						}
+					}
+				}
+			}
+			goto identifier;
 		case 'f':
 			if(getNextChar() == 'o') { // for
 				if(getNextChar() == 'r') {
@@ -864,7 +893,9 @@ Token Lexer::nextToken() {
 		}
 		default:
 			identifier:
-			while(!isTokenStop(getNextChar())) { }
+			if(!isTokenStop(curInput)) {
+				while(!isTokenStop(getNextChar())) { }
+			}
 			readNext = false;
 			std::string tmp = store.str();
 			tmp.pop_back();	

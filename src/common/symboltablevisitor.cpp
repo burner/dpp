@@ -99,8 +99,8 @@ bool SymbolTableVisitor::visitExpression(Expression* node) {
 	return true;
 }
 
-bool SymbolTableVisitor::visitArgument(Argument* /*node*/) {
-	//this->giveAstNodeCurrentSymbolTable(node);
+bool SymbolTableVisitor::visitArgument(Argument* node) {
+	this->giveAstNodeCurrentSymbolTable(node);
 	return true;
 }
 
@@ -149,7 +149,8 @@ bool SymbolTableVisitor::visitExpressionStatement(ExpressionStatement* node) {
 	return true;
 }
 
-bool SymbolTableVisitor::visitFunctionPrototypeDecl(FunctionPrototypeDecl* node) {
+bool SymbolTableVisitor::visitFunctionPrototypeDecl(
+		FunctionPrototypeDecl* node) {
 	this->giveAstNodeCurrentSymbolTable(node);
 	return true;
 }
@@ -231,6 +232,16 @@ bool SymbolTableVisitor::visitPrimaryExpression(PrimaryExpression* node) {
 }
 
 bool SymbolTableVisitor::visitDecl(Decl* node) {
+	this->giveAstNodeCurrentSymbolTable(node);
+	return true;
+}
+
+bool SymbolTableVisitor::visitReturnStatement(ReturnStatement* node) {
+	this->giveAstNodeCurrentSymbolTable(node);
+	return true;
+}
+
+bool SymbolTableVisitor::visitBranchStatement(BranchStatement* node) {
 	this->giveAstNodeCurrentSymbolTable(node);
 	return true;
 }

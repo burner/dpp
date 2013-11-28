@@ -10,7 +10,8 @@
 		{ "Name" : "Long", "Regex" : "long", "ConvertFunction" : "void" },
 		{ "Name" : "Ulong", "Regex" : "ulong", "ConvertFunction" : "void" },
 		{ "Name" : "Const", "Regex" : "const", "ConvertFunction" : "void" },
-		{ "Name" : "Int_Value", "Regex" : "[0-9]+", "ConvertFunction" : "void" },
+		{ "Name" : "Int_Value", "Regex" : "[0-9]+", 
+			"ConvertFunction" : "void" },
 		{ "Name" : "Identifier", "Regex" : "", "ConvertFunction" : "void" },
 		{ "Name" : "Float", "Regex" : "float", "ConvertFunction" : "void" },
 		{ "Name" : "Lparen", "Regex" : "(", "ConvertFunction" : "void" },
@@ -58,6 +59,9 @@
 		{ "Name" : "Do", "Regex" : "do", "ConvertFunction" : "void" }
 		{ "Name" : "Def", "Regex" : "def", "ConvertFunction" : "void" }
 		{ "Name" : "Semicolon", "Regex" : ";", "ConvertFunction" : "void" }
+		{ "Name" : "Return", "Regex" : "return", "ConvertFunction" : "void" }
+		{ "Name" : "Extern", "Regex" : "return", "ConvertFunction" : "void" }
+		{ "Name" : "Else", "Regex" : "else", "ConvertFunction" : "void" }
 	],
 	"Rules" : [
 		{ "Name" : "Start", "Expression" : [
@@ -66,42 +70,63 @@
 		},
 		{ "Name" : "Decl", "Expression" : [
 			{ "Rule" : "FunctionDecl(func)", "Id" : "Function"}
-			{ "Rule" : "FunctionPrototypeDecl(funcDecl)", 
+			{ "Rule" : "Extern ; FunctionPrototypeDecl(funcDecl) ; Semicolon", 
 				"Id" : "FunctionDecl"}
 			]
 		},
 		{ "Name" : "FunctionDecl", "Expression" : [
-			{ "Rule" : "FunctionPrototypeDecl(decl) ; BlockStatement(statements)", 
+			{ "Rule" : 
+				"FunctionPrototypeDecl(decl) ; BlockStatement(statements)", 
 				"Id" : "FunctionWithBlockStmt" }
 			]
 		},
 		{ "Name" : "FunctionPrototypeDecl", "Expression" : [
-			{ "Rule" : "Def ; Type(returnType) ; Identifier(identifier) ; Lparen ; ArgumentList(argList) ; Rparen",
+			{ "Rule" : "Def ; Type(returnType) ; Identifier(identifier) ; "\
+					"Lparen ; ArgumentList(argList) ; Rparen",
 				"Id" : "WithArgList" }
-			{ "Rule" : "Def ; Type(returnType) ; Identifier(identifier) ; Lparen ; Rparen", 
-				"Id" : "WithoutArgList" }
+			{ "Rule" : "Def ; Type(returnType) ; Identifier(identifier) ; "\
+				"Lparen ; Rparen", "Id" : "WithoutArgList" }
 			]
 		},
 		{ "Name" : "StatementList", "Expression" : [
 			{ "Rule" : "Statement(stmt)" , "Id" : "Block" }
-			{ "Rule" : "Statement(stmt) ; StatementList(follow)" , "Id" : "BlockStatementList" }
+			{ "Rule" : "Statement(stmt) ; StatementList(follow)" , 
+				"Id" : "BlockStatementList" }
 			]
 		},
 		{ "Name" : "Statement", "Expression" : [
 			{ "Rule" : "BlockStatement(block)" , "Id" : "Block" }
 			{ "Rule" : "ExpressionStatement(expr)" , "Id" : "Expr" }
 			{ "Rule" : "IterationStatement(iter)" , "Id" : "Iteration" }
+			{ "Rule" : "ReturnStatement(ret)" , "Id" : "Return" }
+			{ "Rule" : "BranchStatement(branch)" , "Id" : "Branch" }
+			]
+		},
+		{ "Name" : "BranchStatement", "Expression" : [
+			{ "Rule" : "If ; Lparen ; ConditionalExpression(condExpr)"\
+				" ; Rparen ; BlockStatement(stmt)", "Id" : "OnlyIf" }
+			{ "Rule" : "If ; Lparen ; ConditionalExpression(condExpr)"\
+				" ; Rparen ; BlockStatement(stmt) ; Else ; "\
+				"BranchStatement(follow)", "Id" : "OnlyIf" }
+			]
+		},
+		{ "Name" : "ReturnStatement", "Expression" : [
+			{ "Rule" : "Return ; ConditionalExpression(condExpr)" , 
+				"Id" : "ReturnConditional" }
+			{ "Rule" : "Return" , "Id" : "Return" }
 			]
 		},
 		{ "Name" : "BlockStatement", "Expression" : [
 			{ "Rule" : "Lcurly ; Rcurly" , "Id" : "Empty" }
-			{ "Rule" : "Lcurly ; StatementList(stmtList) ; Rcurly" , "Id" : "StmtList" }
+			{ "Rule" : "Lcurly ; StatementList(stmtList) ; Rcurly" , 
+				"Id" : "StmtList" }
 			]
 		},
 		{ "Name" : "IterationStatement", "Expression" : [
-			{ "Rule" : "While ; Lparen ; Expression(expr) ; Rparen ; BlockStatement(stmt)" , "Id" : "While" }
-			{ "Rule" : "Do ; BlockStatement(stmt) ; While ; Lparen ; Expression(expr) ; Rparen ; Semicolon", 
-				"Id" : "While" }
+			{ "Rule" : "While ; Lparen ; Expression(expr) ; Rparen ; "\
+				"BlockStatement(stmt)" , "Id" : "While" }
+			{ "Rule" : "Do ; BlockStatement(stmt) ; While ; Lparen ; "\
+				"Expression(expr) ; Rparen ; Semicolon", "Id" : "While" }
 			]
 		},
 		{ "Name" : "ExpressionStatement", "Expression" : [
@@ -115,7 +140,8 @@
 		},
 		{ "Name" : "Type", "Expression" : [
 			{ "Rule" : "BasicType(type)" , "Id" : "BasicType" },
-			{ "Rule" : "BasicType(type) ; TypeFollow(follow)" , "Id" : "BasicTypeFollow" },
+			{ "Rule" : "BasicType(type) ; TypeFollow(follow)" , 
+				"Id" : "BasicTypeFollow" },
 			]
 		},
 		{ "Name" : "BasicType", "Expression" : [
@@ -132,23 +158,30 @@
 		},
 		{ "Name" : "TypeFollow", "Expression" : [
 			{ "Rule" : "Lbrack ; Rbrack" , "Id" : "DynamicArray" },
-			{ "Rule" : "Lbrack ; Rbrack ; TypeFollow(follow)" , "Id" : "DynamicArrayFollow" }
+			{ "Rule" : "Lbrack ; Rbrack ; TypeFollow(follow)" , 
+				"Id" : "DynamicArrayFollow" }
 			]
 		},
 		{ "Name" : "ArgumentList", "Expression" : [
 			{ "Rule" : "Argument(arg)", "Id" : "Single"}
-			{ "Rule" : "Argument(arg) ; Comma ; ArgumentList(follow)", "Id" : "Multiple"}
+			{ "Rule" : "Argument(arg) ; Comma ; ArgumentList(follow)", 
+				"Id" : "Multiple"}
 			]
 		},
 		{ "Name" : "Argument", "Expression" : [
-			{ "Rule" : "VarDeclPrefix(varName) ; VarDeclDeferedInit(type)", "Id" : "VarNameType"}
-			{ "Rule" : "ConstDeclPrefix(constName) ; VarDeclDeferedInit(type)", "Id" : "ConstNameType"}
+			{ "Rule" : "VarDeclPrefix(varName) ; VarDeclDeferedInit(type)", 
+				"Id" : "VarNameType"}
+			{ "Rule" : "ConstDeclPrefix(constName) ; VarDeclDeferedInit(type)", 
+				"Id" : "ConstNameType"}
 			]
 		},
 		{ "Name" : "VarDecl", "Expression" : [
-			{ "Rule" : "VarDeclPrefix(varPrefix) ; VarDeclDirectInit(direct)", "Id" : "VarDeclDirect"}
-			{ "Rule" : "VarDeclPrefix(varPrefix) ; VarDeclDeferedInit(defered)", "Id" : "VarDeclDefered"}
-			{ "Rule" : "ConstDeclPrefix(constPrefix) ; VarDeclDirectInit(direct)", "Id" : "ConstDeclDirect"}
+			{ "Rule" : "VarDeclPrefix(varPrefix) ; VarDeclDirectInit(direct)", 
+				"Id" : "VarDeclDirect"}
+			{ "Rule" : "VarDeclPrefix(varPrefix) ; VarDeclDeferedInit(defered)",
+				"Id" : "VarDeclDefered"}
+			{ "Rule" : "ConstDeclPrefix(constPrefix) ; "\
+				"VarDeclDirectInit(direct)", "Id" : "ConstDeclDirect"}
 			]
 		},
 		{ "Name" : "VarDeclPrefix", "Expression" : [
@@ -160,126 +193,161 @@
 			]
 		},
 		{ "Name" : "VarDeclDirectInit", "Expression" : [
-			{ "Rule" : "Lparen ; OrOrExpression(init) ; Rparen" , "Id" : "Direct" },
+			{ "Rule" : "Lparen ; OrOrExpression(init) ; Rparen" , 
+				"Id" : "Direct" },
 			]
 		},
+		# VarDeclDeferedInit
 		{ "Name" : "VarDeclDeferedInit", "Expression" : [
 			{ "Rule" : "Colon ; Type(type)" , "Id" : "Defered" }
 			]
 		},
 		{ "Name" : "AssignmentExpression", "Expression" : [
 			{ "Rule" : "ConditionalExpression(drain)" , "Id" : "Cond" },
-			{ "Rule" : "ConditionalExpression(drain) ; Assign ; AssignmentExpression(source)" , "Id" : "Assign" },
+			{ "Rule" : "ConditionalExpression(drain) ; Assign ; "\
+				"AssignmentExpression(source)" , "Id" : "Assign" },
 			]
 		},
 		{ "Name" : "ConditionalExpression", "Expression" : [
 			{ "Rule" : "OrOrExpression(orOrExpr)" , "Id" : "OrOr" },
 			{ "Rule" : 
-				"OrOrExpression(orOrExpr) ; Questionmark ; Expression(trueBranch) ; Colon ; ConditionalExpression(otherBranch) " , "Id" : "Ternary" },
+				"OrOrExpression(orOrExpr) ; Questionmark ; "\
+				"Expression(trueBranch) ; Colon ; "\
+				"ConditionalExpression(otherBranch) " , "Id" : "Ternary" },
 			]
 		},
 		{ "Name" : "OrOrExpression", "Expression" : [
 			{ "Rule" : "AndAndExpression(andAndExpr)" , "Id" : "AndAnd" },
-			{ "Rule" : "AndAndExpression(andAndExpr) ; Logicalor ; OrOrExpression(follow)" ,
-				   	"Id" : "LogicalOr" 
+			{ "Rule" : "AndAndExpression(andAndExpr) ; Logicalor ; "\
+				"OrOrExpression(follow)" , "Id" : "LogicalOr" 
 			}
 			]
 		},
 		{ "Name" : "AndAndExpression", "Expression" : [
 			{ "Rule" : "OrExpression(orExpr)" , "Id" : "Or" },
-			{ "Rule" : "OrExpression(orExpr) ; Logicaland ; AndAndExpression(follow)" , "Id" : "LogicalAnd" }
+			{ "Rule" : "OrExpression(orExpr) ; Logicaland ; "\
+				"AndAndExpression(follow)" , "Id" : "LogicalAnd" }
 			]
 		},
 		{ "Name" : "OrExpression", "Expression" : [
 			{ "Rule" : "XorExpression(xorExpr)" , "Id" : "Xor" },
-			{ "Rule" : "XorExpression(xorExpr) ; Xor ; OrExpression(follow)" , "Id" : "Or" }
+			{ "Rule" : "XorExpression(xorExpr) ; Xor ; OrExpression(follow)" , 
+				"Id" : "Or" }
 			]
 		},
 		{ "Name" : "XorExpression", "Expression" : [
 			{ "Rule" : "AndExpression(andExpr)" , "Id" : "And" },
-			{ "Rule" : "AndExpression(andExpr) ; Xor ; XorExpression(follow)" , "Id" : "Xor" }
+			{ "Rule" : "AndExpression(andExpr) ; Xor ; XorExpression(follow)" , 
+				"Id" : "Xor" }
 			]
 		},
 		{ "Name" : "AndExpression", "Expression" : [
 			{ "Rule" : "EqualityExpression(equal)" , "Id" : "Equality" },
-			{ "Rule" : "EqualityExpression(equal) ; And ; AndExpression(follow)" , "Id" : "Equal" }
+			{ "Rule" : "EqualityExpression(equal) ; And ; "\
+				"AndExpression(follow)" , "Id" : "Equal" }
 			]
 		},
 		{ "Name" : "EqualityExpression", "Expression" : [
 			{ "Rule" : "RelExpression(rel)" , "Id" : "Rel" },
-			{ "Rule" : "RelExpression(rel) ; Equal ; EqualityExpression(follow)" , "Id" : "Equal" },
-			{ "Rule" : "RelExpression(rel) ; Bangequal ; EqualityExpression(follow)" , "Id" : "NotEqual" },
-			{ "Rule" : "RelExpression(rel) ; Is ; EqualityExpression(follow)" , "Id" : "Is" },
-			{ "Rule" : "RelExpression(rel) ; Bangis ; EqualityExpression(follow)" , "Id" : "NotIs" },
+			{ "Rule" : "RelExpression(rel) ; Equal ; "\
+				"EqualityExpression(follow)" , "Id" : "Equal" },
+			{ "Rule" : "RelExpression(rel) ; Bangequal ; "\
+				"EqualityExpression(follow)" , "Id" : "NotEqual" },
+			{ "Rule" : "RelExpression(rel) ; Is ; EqualityExpression(follow)" , 
+				"Id" : "Is" },
+			{ "Rule" : "RelExpression(rel) ; Bangis ; "\
+				"EqualityExpression(follow)" , "Id" : "NotIs" },
 			]
 		},
 		{ "Name" : "RelExpression", "Expression" : [
 			{ "Rule" : "ShiftExpression(shift)" , "Id" : "Shift" },
-			{ "Rule" : "ShiftExpression(shift) ; Less ; RelExpression(follow)" , "Id" : "Less" },
-			{ "Rule" : "ShiftExpression(shift) ; Lessequal ; RelExpression(follow)" , "Id" : "Lessequal" },
-			{ "Rule" : "ShiftExpression(shift) ; Greater ; RelExpression(follow)" , "Id" : "Greater" },
-			{ "Rule" : "ShiftExpression(shift) ; Greaterequal ; RelExpression(follow)" , "Id" : "Greaterequal" },
+			{ "Rule" : "ShiftExpression(shift) ; Less ; RelExpression(follow)",
+				 "Id" : "Less" },
+			{ "Rule" : "ShiftExpression(shift) ; Lessequal ; "\
+				"RelExpression(follow)" , "Id" : "Lessequal" },
+			{ "Rule" : "ShiftExpression(shift) ; Greater ; "\
+				"RelExpression(follow)" , "Id" : "Greater" },
+			{ "Rule" : "ShiftExpression(shift) ; Greaterequal ; "\
+				"RelExpression(follow)" , "Id" : "Greaterequal" },
 			]
 		},
 		{ "Name" : "ShiftExpression", "Expression" : [
 			{ "Rule" : "AddExpression(add)" , "Id" : "Add" },
-			{ "Rule" : "AddExpression(add) ; Leftshift ; ShiftExpression(follow)" , "Id" : "LeftShift" },
-			{ "Rule" : "AddExpression(add) ; Rightshift ; ShiftExpression(follow)" , "Id" : "RightShift" },
+			{ "Rule" : "AddExpression(add) ; Leftshift ; "\
+				"ShiftExpression(follow)" , "Id" : "LeftShift" },
+			{ "Rule" : "AddExpression(add) ; Rightshift ; "\
+				"ShiftExpression(follow)" , "Id" : "RightShift" },
 			]
 		},
 		{ "Name" : "AddExpression", "Expression" : [
 			{ "Rule" : "MulExpression(mul)" , "Id" : "Mul" },
-			{ "Rule" : "MulExpression(mul) ; Plus ; AddExpression(follow)" , "Id" : "Plus" },
-			{ "Rule" : "MulExpression(mul) ; Minus ; AddExpression(follow)" , "Id" : "Minus" },
+			{ "Rule" : "MulExpression(mul) ; Plus ; AddExpression(follow)" , 
+				"Id" : "Plus" },
+			{ "Rule" : "MulExpression(mul) ; Minus ; AddExpression(follow)" , 
+				"Id" : "Minus" },
 			]
 		},
 		{ "Name" : "MulExpression", "Expression" : [
 			{ "Rule" : "CastExpression(cast)" , "Id" : "Cast" },
-			{ "Rule" : "CastExpression(cast) ; Star ; MulExpression(follow)" , "Id" : "Multi" },
-			{ "Rule" : "CastExpression(cast) ; Div ; MulExpression(follow)" , "Id" : "Div" },
-			{ "Rule" : "CastExpression(cast) ; Modulo ; MulExpression(follow)" , "Id" : "Modulo" },
+			{ "Rule" : "CastExpression(cast) ; Star ; MulExpression(follow)" , 
+				"Id" : "Multi" },
+			{ "Rule" : "CastExpression(cast) ; Div ; MulExpression(follow)" , 
+				"Id" : "Div" },
+			{ "Rule" : "CastExpression(cast) ; Modulo ; MulExpression(follow)",
+				 "Id" : "Modulo" },
 			]
 		},
 		{ "Name" : "CastExpression", "Expression" : [
 			{ "Rule" : " UnaryExpression(unaryFollow)" , "Id" : "Unary" },
-			{ "Rule" : " Cast ; Lparen ;  Identifier(type) ; Rparen ; CastExpression(follow)" , "Id" : "Cast" },
+			{ "Rule" : " Cast ; Lparen ;  Identifier(type) ; Rparen ; "\
+				"CastExpression(follow)" , "Id" : "Cast" },
 			]
 		},
 		{ "Name" : "UnaryExpression", "Expression" : [
 			{ "Rule" : "PostfixExpression(expr)" , "Id" : "Post" },
-			{ "Rule" : "Plusplus ; UnaryExpression(follow)" , "Id" : "IncUnary" },
-			{ "Rule" : "Plus ; UnaryExpression(follow)" , "Id" : "PlusUnary" },
-			{ "Rule" : "Minus ; UnaryExpression(follow)" , "Id" : "MinusUnary" },
-			{ "Rule" : "Bang ; UnaryExpression(follow)" , "Id" : "BangUnary" },
-			{ "Rule" : "Concat ; UnaryExpression(follow)" , "Id" : "ConcatUnary" },
-			{ "Rule" : "And ; UnaryExpression(follow)" , "Id" : "AndUnary" },
-			{ "Rule" : "Star ; UnaryExpression(follow)" , "Id" : "StarUnary" },
-			{ "Rule" : "Minusminus ; UnaryExpression(follow)" , "Id" : "DecUnary" }
+			{ "Rule" : "Plusplus ; UnaryExpression(follow)", "Id" : "IncUnary" }
+			{ "Rule" : "Plus ; UnaryExpression(follow)" , "Id" : "PlusUnary" }
+			{ "Rule" : "Minus ; UnaryExpression(follow)" , "Id" : "MinusUnary" }
+			{ "Rule" : "Bang ; UnaryExpression(follow)" , "Id" : "BangUnary" }
+			{ "Rule" : "Concat ; UnaryExpression(follow)" , 
+				"Id" : "ConcatUnary" },
+			{ "Rule" : "And ; UnaryExpression(follow)" , "Id" : "AndUnary" }
+			{ "Rule" : "Star ; UnaryExpression(follow)" , "Id" : "StarUnary" }
+			{ "Rule" : "Minusminus ; UnaryExpression(follow)" , 
+				"Id" : "DecUnary" }
 			]
 		},
 		{ "Name" : "PostfixExpression", "Expression" : [
 			{ "Rule" : "PrimaryExpression(primaryExpr)", "Id" : "Ident" },
-			{ "Rule" : "PrimaryExpression(primaryExpr) ; PostfixNextExpression(follow)", 
-				"Id" : "IdentPostfixNext" },
+			{ "Rule" : "PrimaryExpression(primaryExpr) ; "\
+				"PostfixNextExpression(follow)", "Id" : "IdentPostfixNext" },
 			]
 		},
 		{ "Name" : "PostfixNextExpression", "Expression" : [
-			{ "Rule" : "Dot ; PostfixNextExpression(followPost)", "Id" : "DotPostfixNext" },
-			{ "Rule" : "Dot ; PrimaryExpression(followPrimary)", "Id" : "DotPrimary" },
-			{ "Rule" : "Dot ; PrimaryExpression(followPrimary) ; PostfixNextExpression(followPost)", 
+			{ "Rule" : "Dot ; PostfixNextExpression(followPost)", 
+				"Id" : "DotPostfixNext" },
+			{ "Rule" : "Dot ; PrimaryExpression(followPrimary)", 
+				"Id" : "DotPrimary" },
+			{ "Rule" : "Dot ; PrimaryExpression(followPrimary) ; "\
+				"PostfixNextExpression(followPost)", 
 				"Id" : "DotPrimaryPostfixNext" 
 			},
 			{ "Rule" : "Lparen ; Rparen", "Id" : "Call" },
-			{ "Rule" : "Lparen ; Rparen ; PostfixNextExpression(followPost)", "Id" : "CallPostFixNext" },
-			{ "Rule" : "Lbrack ; Expression(expr) ; Rbrack", "Id" : "ArrayExpr" },
-			{ "Rule" : "Lbrack ; Expression(expr) ; Rbrack ; PostfixNextExpression(followPost)", 
+			{ "Rule" : "Lparen ; Rparen ; PostfixNextExpression(followPost)", 
+				"Id" : "CallPostFixNext" },
+			{ "Rule" : "Lbrack ; Expression(expr) ; Rbrack", 
+				"Id" : "ArrayExpr" },
+			{ "Rule" : "Lbrack ; Expression(expr) ; Rbrack ; "\
+				"PostfixNextExpression(followPost)", 
 				"Id" : "ArrayExprPostfixNext" }
 			]
 		},
 		{ "Name" : "PrimaryExpression", "Expression" : [
-			{ "Rule" : "Identifier(value)", "Id" : "PrimaryExpressionIdentifier" },
+			{ "Rule" : "Identifier(value)", 
+				"Id" : "PrimaryExpressionIdentifier" },
 			{ "Rule" : "Int_Value(value) ", "Id" : "Value" },
-			{ "Rule" : "Lparen ; Expression(expr) ; Rparen", "Id" : "PrimaryExpressionExpression" }
+			{ "Rule" : "Lparen ; Expression(expr) ; Rparen", 
+				"Id" : "PrimaryExpressionExpression" }
 			]
 		}
 	]

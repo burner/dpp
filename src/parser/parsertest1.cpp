@@ -138,3 +138,41 @@ UNITTEST(unary1) {
 	//std::cout<<std::endl;
 	//ast->acceptVisitor(ll);
 }
+
+UNITTEST(extern1) {
+	auto ss = std::make_shared<std::stringstream>
+		("extern def int read(var a : int, var b : float);"
+		"extern def int write(var a : int, var b : float);");
+	Lexer l(ss);
+	Parser p(l);
+	auto ast = p.parseDecl();
+	StdOutVisitor v(std::cout);
+	std::ofstream z("test.dot");
+	DotVisitor d(z);
+	LLVMVisitor ll;
+	//ast->acceptVisitor(d);
+	//std::cout<<std::endl;
+	//ast->acceptVisitor(v);
+	//std::cout<<std::endl;
+	//ast->acceptVisitor(ll);
+}
+
+UNITTEST(ifelse1) {
+	auto ss = std::make_shared<std::stringstream>
+		("def int main() {"
+		 " if(a ? b : c) {"
+		 " }"
+		 "}");
+		 
+	Lexer l(ss);
+	Parser p(l);
+	auto ast = p.parseDecl();
+	//StdOutVisitor v(std::cout);
+	//std::ofstream z("test.dot");
+	//DotVisitor d(z);
+	//ast->acceptVisitor(d);
+	//std::cout<<std::endl;
+	//ast->acceptVisitor(v);
+	//std::cout<<std::endl;
+	//ast->acceptVisitor(ll);
+}

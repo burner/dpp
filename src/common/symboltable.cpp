@@ -14,6 +14,7 @@ SymbolTableEntry::SymbolTableEntry(const std::string& i, const Loc& l,
 		AstNode* n) : id(i), loc(l), astEntry(n)
 {
 }
+
 SymbolTableEntry::SymbolTableEntry(const std::string& i, AstNode* n) : 
 		id(i), astEntry(n)
 {
@@ -31,7 +32,8 @@ SymbolTable::SymbolTable() : parent(nullptr), type(SymbolTableType::Ordered) {
 }
 
 SymbolTable::SymbolTable(SymbolTable* p, SymbolTableType t) : parent(p),
-		type(t) {
+		type(t) 
+{
 }
 
 void SymbolTable::insert(const std::string& id , const Loc& l) {

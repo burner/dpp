@@ -217,7 +217,9 @@ std::string tokenTypeToString(const TokenType tt) {
 	case TokenType::Dstring: return "DSTRING";
 	case TokenType::Dstring_Value: return "DSTRING_VALUE";
 	case TokenType::Eoi: return "ENDOFINPUT";
+	case TokenType::Else: return "ELSE";
 	case TokenType::Equal: return "EQUAL";
+	case TokenType::Extern: return "EXTERN";
 	case TokenType::Error_Type: return "Error_Type";
 	case TokenType::Float: return "FLOAT";
 	case TokenType::Final: return "FINAL";

@@ -70,3 +70,68 @@ UNITTEST(functionDecl2) {
 	ast->acceptVisitor(lv);
 	AS_T(worked);
 }
+
+UNITTEST(functionDecl3) {
+	auto ss = std::make_shared<std::stringstream>
+		("def int bar(var foo : int) { return foo+2; }");
+	Lexer l(ss);
+	Parser p(l);
+	auto ast = p.parseFunctionDecl();
+	SymbolTableVisitor stv;
+	ast->acceptVisitor(stv);
+
+	auto map = stv.getRoot()->getMap();
+	AS_T(map.count(SymbolTableEntry("bar")));
+	AS_T(stv.getRoot()->contains("bar"));
+	AS_EQ(stv.getRoot()->getFollow().size(), 1u);
+	AS_T(stv.getRoot()->getFollow()[0]->contains("bar"));
+	AS_F(stv.getRoot()->getFollow()[0]->contains("foo"));
+
+	bool worked(true);
+	LambdaVisitor lv([&worked](const AstNode* n) {
+		worked = worked && n->getSymbolTable() != nullptr;
+		return n->getSymbolTable() != nullptr;
+	});
+	ast->acceptVisitor(lv);
+	AS_T(worked);
+}
+
+UNITTEST(externDecl1) {
+	auto ss = std::make_shared<std::stringstream>
+		("extern def int read(var a : int, var b : float);"
+		"extern def int write(var a : int, var b : float);");
+	Lexer l(ss);
+	Parser p(l);
+	auto ast = p.parseDecl();
+	SymbolTableVisitor stv;
+	ast->acceptVisitor(stv);
+
+	bool worked(true);
+	LambdaVisitor lv([&worked](const AstNode* n) {
+		worked = worked && n->getSymbolTable() != nullptr;
+		return n->getSymbolTable() != nullptr;
+	});
+	ast->acceptVisitor(lv);
+	AS_T(worked);
+}
+
+UNITTEST(functionDecl4) {
+	auto ss = std::make_shared<std::stringstream>
+		("def int main() {"
+		 " if(a ? b : c) {"
+		 " }"
+		 "}");
+	Lexer l(ss);
+	Parser p(l);
+	auto ast = p.parseFunctionDecl();
+	SymbolTableVisitor stv;
+	ast->acceptVisitor(stv);
+
+	bool worked(true);
+	LambdaVisitor lv([&worked](const AstNode* n) {
+		worked = worked && n->getSymbolTable() != nullptr;
+		return n->getSymbolTable() != nullptr;
+	});
+	ast->acceptVisitor(lv);
+	AS_T(worked);
+}

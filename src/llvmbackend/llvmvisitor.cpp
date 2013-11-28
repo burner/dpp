@@ -189,6 +189,17 @@ bool LLVMVisitor::visitPrimaryExpression(const PrimaryExpression*) { return true
 
 bool LLVMVisitor::leavePrimaryExpression(PrimaryExpression*) { return true; }
 bool LLVMVisitor::leavePrimaryExpression(const PrimaryExpression*) { return true; }
+bool LLVMVisitor::visitReturnStatement(ReturnStatement*) { return true; }
+bool LLVMVisitor::visitReturnStatement(const ReturnStatement*) { return true; }
+
+bool LLVMVisitor::leaveReturnStatement(ReturnStatement*) { return true; }
+bool LLVMVisitor::leaveReturnStatement(const ReturnStatement*) { return true; }
+
+bool LLVMVisitor::visitBranchStatement(BranchStatement*) { return true; }
+bool LLVMVisitor::visitBranchStatement(const BranchStatement*) { return true; }
+
+bool LLVMVisitor::leaveBranchStatement(BranchStatement*) { return true; }
+bool LLVMVisitor::leaveBranchStatement(const BranchStatement*) { return true; }
 
 bool LLVMVisitor::visitDecl(Decl*) {
 	ASSERT_T_MSG(false, "LLVMVisitor::visitDecl(Decl*) not implemented");

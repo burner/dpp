@@ -67,6 +67,8 @@ enum class TokenType {
 	Dstring_Value,//			"\"[utf]*\"d"
 	Eoi, // done
 	Equal, // done				"=="
+	Else, // done				"else"
+	Extern, // done				"extern
 	Error_Type,
 	Float,	//					"float"
 	Final,	//					"final"
