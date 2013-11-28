@@ -245,3 +245,13 @@ bool SymbolTableVisitor::visitBranchStatement(BranchStatement* node) {
 	this->giveAstNodeCurrentSymbolTable(node);
 	return true;
 }
+
+bool SymbolTableVisitor::visitIfStatement(IfStatement* node) {
+	this->giveAstNodeCurrentSymbolTable(node);
+	return true;
+}
+
+bool SymbolTableVisitor::visitIfFollowStatement(IfFollowStatement* node) {
+	this->giveAstNodeCurrentSymbolTable(node);
+	return true;
+}

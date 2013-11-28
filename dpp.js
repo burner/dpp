@@ -64,10 +64,12 @@
 		{ "Name" : "Else", "Regex" : "else", "ConvertFunction" : "void" }
 		{ "Name" : "Foreach", "Regex" : "foreach", "ConvertFunction" : "void" }
 		{ "Name" : "For", "Regex" : "for", "ConvertFunction" : "void" }
+		{ "Name" : "True", "Regex" : "true", "ConvertFunction" : "void" }
+		{ "Name" : "False", "Regex" : "false", "ConvertFunction" : "void" }
 	],
 	"Rules" : [
 		{ "Name" : "Start", "Expression" : [
-			{ "Rule" : "Expression(start)", "Id" : "Start" }
+			{ "Rule" : "Decl(start)", "Id" : "Start" }
 			]
 		},
 		{ "Name" : "Decl", "Expression" : [
@@ -97,11 +99,46 @@
 			]
 		},
 		{ "Name" : "Statement", "Expression" : [
-			{ "Rule" : "BlockStatement(block)" , "Id" : "Block" }
-			{ "Rule" : "ExpressionStatement(expr)" , "Id" : "Expr" }
-			{ "Rule" : "IterationStatement(iter)" , "Id" : "Iteration" }
-			{ "Rule" : "ReturnStatement(ret)" , "Id" : "Return" }
-			{ "Rule" : "BranchStatement(branch)" , "Id" : "Branch" }
+			{ "Rule" : "BlockStatement(blockstmt)" , "Id" : "Block" }
+			{ "Rule" : "ExpressionStatement(exprstmt)" , "Id" : "Expr" }
+			{ "Rule" : "IterationStatement(iterstmt)" , "Id" : "Iteration" }
+			{ "Rule" : "ReturnStatement(retstmt)" , "Id" : "Return" }
+			{ "Rule" : "BranchStatement(branchstmt)" , "Id" : "Branch" }
+			{ "Rule" : "ForStatement(forstmt)" , "Id" : "For" }
+			{ "Rule" : "WhileStatement(whilestmt)" , "Id" : "While" }
+			{ "Rule" : "DoWhileStatement(dowhilestmt)" , "Id" : "DoWhile" }
+			]
+		},
+		{ "Name" : "DoWhileStatement", "Expression" : [
+			# without label
+			{ "Rule" : "Do ; BlockStatement(stmt) ; While ; Lparen ; "\
+				"ConditionalExpression(cond) ; Rparen ; Semicolon",
+				"Id" : "Cond"}
+			{ "Rule" : "Do ; BlockStatement(stmt) ; While ; Lparen ; "\
+				"Rparen ; Semicolon", "Id" : "WithoutCond"}
+			# with label
+			{ "Rule" : "Do ; BlockStatement(stmt) ; Identifier(label) ; "\
+				"While ; Lparen ; ConditionalExpression(cond) ; Rparen ; "\
+				"Semicolon", "Id" : "CondLabel"}
+			{ "Rule" : "Do ; BlockStatement(stmt) ; Identifier(label) ; "\
+				"While ; Lparen ; Rparen ; Semicolon", 
+				"Id" : "WithoutCondLabel"}
+			]
+		},
+		{ "Name" : "WhileStatement", "Expression" : [
+			# without label
+			{ "Rule" : "While ; Lparen ; ConditionalExpression(cond) ; "\
+				"Rparen ; BlockStatement(stmt)", "Id" : "Cond"}
+			{ "Rule" : "While ; Lparen ; Rparen ; BlockStatement(stmt)", 
+				"Id" : "WhileTrue"}
+	
+			# with label
+			{ "Rule" : "While ; Lparen ; ConditionalExpression(cond) ; "\
+				"Rparen ; Identifier(label) ; BlockStatement(stmt)", 
+				"Id" : "Cond"}
+			{ "Rule" : "While ; Lparen ; Rparen ; Identifier(label) ; "\
+				"BlockStatement(stmt)", 
+				"Id" : "WhileTrue"}
 			]
 		},
 		{ "Name" : "ForStatement", "Expression" : [
@@ -176,11 +213,25 @@
 			]
 		},
 		{ "Name" : "BranchStatement", "Expression" : [
+			{ "Rule" : "IfStatement(ifStmt)", "Id" : "If"}
+			]
+		}
+		{ "Name" : "IfStatement", "Expression" : [
 			{ "Rule" : "If ; Lparen ; ConditionalExpression(condExpr)"\
-				" ; Rparen ; BlockStatement(stmt)", "Id" : "OnlyIf" }
+				" ; Rparen ; BlockStatement(thanBranch)", "Id" : "If" }
+
 			{ "Rule" : "If ; Lparen ; ConditionalExpression(condExpr)"\
-				" ; Rparen ; BlockStatement(stmt) ; Else ; "\
-				"BranchStatement(follow)", "Id" : "OnlyIf" }
+				" ; Rparen ; BlockStatement(thanBranch) ; "\
+				"IfFollowStatement(follow)" , "Id" : "IfFollow" }
+			]
+		},
+		{ "Name" : "IfFollowStatement", "Expression" : [
+			{ "Rule" : "Else ; BlockStatement(stmt)", "Id" : "Else" }
+			{ "Rule" : "Else ; If ; Lparen ; ConditionalExpression(cond) ; "\
+				"Rparen ; BlockStatement(stmt)", "Id" : "ElseIf" }
+			{ "Rule" : "Else ; If ; Lparen ; ConditionalExpression(cond) ; "\
+				"Rparen ; BlockStatement(stmt) ; IfFollowStatement(follow)", 
+				"Id" : "ElseIfFollow" }
 			]
 		},
 		{ "Name" : "ReturnStatement", "Expression" : [
@@ -419,6 +470,8 @@
 			{ "Rule" : "Identifier(value)", 
 				"Id" : "PrimaryExpressionIdentifier" },
 			{ "Rule" : "Int_Value(value) ", "Id" : "Value" },
+			{ "Rule" : "True ", "Id" : "True" },
+			{ "Rule" : "False ", "Id" : "False" },
 			{ "Rule" : "Lparen ; Expression(expr) ; Rparen", 
 				"Id" : "PrimaryExpressionExpression" }
 			]

@@ -57,6 +57,8 @@ public:
 	virtual bool visitDecl(Decl*);
 	virtual bool visitReturnStatement(ReturnStatement*);
 	virtual bool visitBranchStatement(BranchStatement*);
+	virtual bool visitIfStatement(IfStatement*);
+	virtual bool visitIfFollowStatement(IfFollowStatement*);
 
 private:
 	SymbolTableStack stack;

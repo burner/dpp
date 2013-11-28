@@ -516,12 +516,25 @@ Token Lexer::nextToken() {
 			}
 			goto identifier;
 		case 'f':
-			if(getNextChar() == 'o') { // for
+			if(getNextChar() == 'a') { // false
+				if(getNextChar() == 'l') {
+					if(getNextChar() == 's') {
+						if(getNextChar() == 'e') {
+							if(isTokenStop(getNextChar())) {
+								readNext = false;
+								return Token(TokenType::False, 
+									tokenLine, tokenColumn
+								);
+							}
+						}
+					}
+				}
+			} else if(curInput == 'o') { // for
 				if(getNextChar() == 'r') {
 					if(isTokenStop(getNextChar())) {
 						readNext = false;
 						return Token(TokenType::For, tokenLine, tokenColumn);
-					} else if(curInput == 'e') {
+					} else if(curInput == 'e') { // foreach
 						if(getNextChar() == 'a') {
 							if(getNextChar() == 'c') {
 								if(getNextChar() == 'h') {
@@ -548,7 +561,7 @@ Token Lexer::nextToken() {
 						}
 					}
 				}
-			} else if(curInput == 'l') { // final
+			} else if(curInput == 'l') { // float
 				if(getNextChar() == 'o') {
 					if(getNextChar() == 'a') {
 						if(getNextChar() == 't') {
@@ -686,7 +699,17 @@ Token Lexer::nextToken() {
 			}
 			goto identifier;
 		case 't':
-			if(getNextChar() == 'y') { // typeof
+			if(getNextChar() == 'r') { // typeof
+				if(getNextChar() == 'u') {
+					if(getNextChar() == 'e') {
+						if(isTokenStop(getNextChar())) {
+							readNext = false;
+							return Token(TokenType::True, 
+								tokenLine, tokenColumn);
+						}
+					}
+				}
+			} else if(curInput == 'y') { // typeof
 				if(getNextChar() == 'p') {
 					if(getNextChar() == 'e') {
 						if(getNextChar() == 'o') {

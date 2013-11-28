@@ -271,6 +271,8 @@ std::string tokenTypeToString(const TokenType tt) {
 	case TokenType::Short: return "SHORT";
 	case TokenType::Scope: return "SCOPE";
 	case TokenType::Typeof: return "TYPEOF";
+	case TokenType::True: return "TRUE";
+	case TokenType::False: return "FALSE";
 	case TokenType::Short_Value: return "SHORT_VALUE";
 	case TokenType::Star: return "STAR";
 	case TokenType::Starassign: return "STARASSIGN";

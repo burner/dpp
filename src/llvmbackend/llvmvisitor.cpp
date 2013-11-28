@@ -207,6 +207,30 @@ bool LLVMVisitor::visitForStatement(const ForStatement*) { return true; }
 bool LLVMVisitor::leaveForStatement(ForStatement*) { return true; }
 bool LLVMVisitor::leaveForStatement(const ForStatement*) { return true; }
 
+bool LLVMVisitor::visitWhileStatement(WhileStatement*) { return true; }
+bool LLVMVisitor::visitWhileStatement(const WhileStatement*) { return true; }
+
+bool LLVMVisitor::leaveWhileStatement(WhileStatement*) { return true; }
+bool LLVMVisitor::leaveWhileStatement(const WhileStatement*) { return true; }
+
+bool LLVMVisitor::visitDoWhileStatement(DoWhileStatement*) { return true; }
+bool LLVMVisitor::visitDoWhileStatement(const DoWhileStatement*) { return true; }
+
+bool LLVMVisitor::leaveDoWhileStatement(DoWhileStatement*) { return true; }
+bool LLVMVisitor::leaveDoWhileStatement(const DoWhileStatement*) { return true; }
+
+bool LLVMVisitor::visitIfFollowStatement(IfFollowStatement*) { return true; }
+bool LLVMVisitor::visitIfFollowStatement(const IfFollowStatement*) { return true; }
+
+bool LLVMVisitor::leaveIfFollowStatement(IfFollowStatement*) { return true; }
+bool LLVMVisitor::leaveIfFollowStatement(const IfFollowStatement*) { return true; }
+
+bool LLVMVisitor::visitIfStatement(IfStatement*) { return true; }
+bool LLVMVisitor::visitIfStatement(const IfStatement*) { return true; }
+
+bool LLVMVisitor::leaveIfStatement(IfStatement*) { return true; }
+bool LLVMVisitor::leaveIfStatement(const IfStatement*) { return true; }
+
 bool LLVMVisitor::visitDecl(Decl*) {
 	ASSERT_T_MSG(false, "LLVMVisitor::visitDecl(Decl*) not implemented");
 	return false;

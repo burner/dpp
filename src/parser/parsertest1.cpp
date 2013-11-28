@@ -167,12 +167,81 @@ UNITTEST(ifelse1) {
 	Lexer l(ss);
 	Parser p(l);
 	auto ast = p.parseDecl();
-	//StdOutVisitor v(std::cout);
-	//std::ofstream z("test.dot");
-	//DotVisitor d(z);
-	//ast->acceptVisitor(d);
-	//std::cout<<std::endl;
-	//ast->acceptVisitor(v);
-	//std::cout<<std::endl;
-	//ast->acceptVisitor(ll);
+}
+
+UNITTEST(ifelse2) {
+	auto ss = std::make_shared<std::stringstream>
+		("def int main() {"
+		 " if(a ? b : c) {"
+		 " } else {}"
+		 "}");
+		 
+	Lexer l(ss);
+	Parser p(l);
+	auto ast = p.parseDecl();
+}
+
+UNITTEST(ifelse3) {
+	auto ss = std::make_shared<std::stringstream>
+		("def int main() {"
+		 " if(a ? b : c) {"
+		 " } else if(true) {"
+		 " } else {}"
+		 "}");
+		 
+	Lexer l(ss);
+	Parser p(l);
+	auto ast = p.parseDecl();
+}
+
+UNITTEST(do1) {
+	auto ss = std::make_shared<std::stringstream>
+		("def int main() {"
+		 " do {"
+		 " } while(false);"
+		 "}");
+		 
+	Lexer l(ss);
+	Parser p(l);
+	auto ast = p.parseDecl();
+}
+
+UNITTEST(for1) {
+	auto ss = std::make_shared<std::stringstream>
+		("def int main() {"
+		 " for(;;) {"
+		 " }"
+		 "}");
+		 
+	Lexer l(ss);
+	Parser p(l);
+	auto ast = p.parseDecl();
+}
+
+UNITTEST(for2) {
+	auto ss = std::make_shared<std::stringstream>
+		("def int main() {"
+		 " for(;;) {"
+		 "  for(var f(128); f > 0; --f) {"
+		 "  }"
+		 " }"
+		 "}");
+		 
+	Lexer l(ss);
+	Parser p(l);
+	auto ast = p.parseDecl();
+}
+
+UNITTEST(for3) {
+	auto ss = std::make_shared<std::stringstream>
+		("def int main() {"
+		 " for(;;) outer {"
+		 "  for(var f(128); f > 0; --f) {"
+		 "  }"
+		 " }"
+		 "}");
+		 
+	Lexer l(ss);
+	Parser p(l);
+	auto ast = p.parseDecl();
 }

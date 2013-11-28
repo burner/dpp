@@ -122,6 +122,8 @@ enum class TokenType {
 	Star, // done				"*"
 	Starassign,	//				"*="
 	Typeof,	//					"typeof"
+	True,	//					"true"
+	False,	//					"false"
 	String,	//					"string"
 	Scope,	//					"scope"
 	String_Value,//				"[utf]*"
