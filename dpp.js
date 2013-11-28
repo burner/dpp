@@ -62,6 +62,8 @@
 		{ "Name" : "Return", "Regex" : "return", "ConvertFunction" : "void" }
 		{ "Name" : "Extern", "Regex" : "return", "ConvertFunction" : "void" }
 		{ "Name" : "Else", "Regex" : "else", "ConvertFunction" : "void" }
+		{ "Name" : "Foreach", "Regex" : "foreach", "ConvertFunction" : "void" }
+		{ "Name" : "For", "Regex" : "for", "ConvertFunction" : "void" }
 	],
 	"Rules" : [
 		{ "Name" : "Start", "Expression" : [
@@ -100,6 +102,77 @@
 			{ "Rule" : "IterationStatement(iter)" , "Id" : "Iteration" }
 			{ "Rule" : "ReturnStatement(ret)" , "Id" : "Return" }
 			{ "Rule" : "BranchStatement(branch)" , "Id" : "Branch" }
+			]
+		},
+		{ "Name" : "ForStatement", "Expression" : [
+			# without label
+			{ "Rule" : "For ; Lparen ; VarDeclPrefix(itPrefix) ; "\
+				"VarDeclDirectInit(itInit) ; Semicolon ; "\
+				"ConditionalExpression(test) ; Semicolon ; Expression(incre) "\
+				"; Rparen ; BlockStatement(stmt) " , "Id" : "InitTestInc" }
+			{ "Rule" : "For ; Lparen ; VarDeclPrefix(itPrefix) ; "\
+				"VarDeclDirectInit(itInit) ; Semicolon ; "\
+				"ConditionalExpression(test) ; Semicolon "\
+				"; Rparen ; BlockStatement(stmt) " , "Id" : "InitTest" }
+			{ "Rule" : "For ; Lparen ; VarDeclPrefix(itPrefix) ; "\
+				"VarDeclDirectInit(itInit) ; Semicolon ; "\
+				"Semicolon ; Expression(incre) "\
+				"; Rparen ; BlockStatement(stmt) " , "Id" : "InitInc" }
+			{ "Rule" : "For ; Lparen ; VarDeclPrefix(itPrefix) ; "\
+				"VarDeclDirectInit(itInit) ; Semicolon ; Semicolon "\
+				"; Rparen ; BlockStatement(stmt) " , "Id" : "Init" }
+			{ "Rule" : "For ; Lparen ; Semicolon ; "\
+				"ConditionalExpression(test) ; Semicolon ; Expression(incre) "\
+				"; Rparen ; BlockStatement(stmt) " , "Id" : "TestInc" }
+			{ "Rule" : "For ; Lparen ; Semicolon ; "\
+				"ConditionalExpression(test) ; Semicolon ; "\
+				"BlockStatement(stmt) " , "Id" : "Test" }
+			{ "Rule" : "For ; Lparen ; Semicolon ; Semicolon ; "\
+				"Expression(incre) "\
+				"; Rparen ; BlockStatement(stmt) " , "Id" : "Inc" }
+			{ "Rule" : "For ; Lparen ; Semicolon ; Semicolon ; "\
+				"Expression(incre) ; Rparen ; BlockStatement(stmt) ",
+				"Id" : "Inc" }
+			{ "Rule" : "For ; Lparen ; Semicolon ; Semicolon ; Rparen ; "\
+				"BlockStatement(stmt) " , "Id" : "WhileTrue" }
+			# with label
+			{ "Rule" : "For ; Lparen ; VarDeclPrefix(itPrefix) ; "\
+				"VarDeclDirectInit(itInit) ; Semicolon ; "\
+				"ConditionalExpression(test) ; Semicolon ; Expression(incre) "\
+				"; Rparen ; Identifier(label) ; BlockStatement(stmt) " , 
+				"Id" : "InitTestIncLabel" }
+			{ "Rule" : "For ; Lparen ; VarDeclPrefix(itPrefix) ; "\
+				"VarDeclDirectInit(itInit) ; Semicolon ; "\
+				"ConditionalExpression(test) ; Semicolon "\
+				"; Rparen ; Identifier(label) ; BlockStatement(stmt) " , 
+				"Id" : "InitTestLabel" }
+			{ "Rule" : "For ; Lparen ; VarDeclPrefix(itPrefix) ; "\
+				"VarDeclDirectInit(itInit) ; Semicolon ; "\
+				"Semicolon ; Expression(incre) "\
+				"; Rparen ; Identifier(label) ; BlockStatement(stmt) " , 
+				"Id" : "InitIncLabel" }
+			{ "Rule" : "For ; Lparen ; VarDeclPrefix(itPrefix) ; "\
+				"VarDeclDirectInit(itInit) ; Semicolon ; Semicolon "\
+				"; Rparen ; Identifier(label) ; BlockStatement(stmt) " , 
+				"Id" : "InitLabel" }
+			{ "Rule" : "For ; Lparen ; Semicolon ; "\
+				"ConditionalExpression(test) ; Semicolon ; Expression(incre) "\
+				"; Rparen ; Identifier(label) ; BlockStatement(stmt) " , 
+				"Id" : "TestIncLabel" }
+			{ "Rule" : "For ; Lparen ; Semicolon ; "\
+				"ConditionalExpression(test) ; Semicolon ; Rparen ;"\
+				"Identifier(label) ; BlockStatement(stmt) " , 
+				"Id" : "TestLabel" }
+			{ "Rule" : "For ; Lparen ; Semicolon ; Semicolon ; "\
+				"Expression(incre) "\
+				"; Rparen ; Identifier(label) ; BlockStatement(stmt) " , 
+				"Id" : "IncLabel" }
+			{ "Rule" : "For ; Lparen ; Semicolon ; Semicolon ; "\
+				"Expression(incre) ; Rparen ; Identifier(label) ; "\
+				"BlockStatement(stmt) ", "Id" : "IncLabel" }
+			{ "Rule" : "For ; Lparen ; Semicolon ; Semicolon ; Rparen ; "\
+				"Identifier(label) ; BlockStatement(stmt) " , 
+				"Id" : "WhileTrueLabel" }
 			]
 		},
 		{ "Name" : "BranchStatement", "Expression" : [

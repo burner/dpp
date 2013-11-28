@@ -201,6 +201,12 @@ bool LLVMVisitor::visitBranchStatement(const BranchStatement*) { return true; }
 bool LLVMVisitor::leaveBranchStatement(BranchStatement*) { return true; }
 bool LLVMVisitor::leaveBranchStatement(const BranchStatement*) { return true; }
 
+bool LLVMVisitor::visitForStatement(ForStatement*) { return true; }
+bool LLVMVisitor::visitForStatement(const ForStatement*) { return true; }
+
+bool LLVMVisitor::leaveForStatement(ForStatement*) { return true; }
+bool LLVMVisitor::leaveForStatement(const ForStatement*) { return true; }
+
 bool LLVMVisitor::visitDecl(Decl*) {
 	ASSERT_T_MSG(false, "LLVMVisitor::visitDecl(Decl*) not implemented");
 	return false;
