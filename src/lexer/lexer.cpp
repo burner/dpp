@@ -402,6 +402,18 @@ Token Lexer::nextToken() {
 						}
 					}
 				}
+			} else if(curInput == 'r') { // break
+				if(getNextChar() == 'e') {
+					if(getNextChar() == 'a') {
+						if(getNextChar() == 'k') {
+							if(isTokenStop(getNextChar())) {
+								readNext = false;
+								return Token(TokenType::Break, tokenLine,
+									tokenColumn);
+							}
+						}
+					}
+				}
 			} else if(curInput == 'y') { // byte
 				if(getNextChar() == 't') {
 					if(getNextChar() == 'e') {
@@ -440,6 +452,20 @@ Token Lexer::nextToken() {
 								readNext = false;
 								return Token(TokenType::Const, tokenLine, 
 									tokenColumn);
+							}
+						}
+					} else if(curInput == 't') {
+						if(getNextChar() == 'i') {
+							if(getNextChar() == 'n') {
+								if(getNextChar() == 'u') {
+									if(getNextChar() == 'e') {
+										if(isTokenStop(getNextChar())) {
+											readNext = false;
+											return Token(TokenType::Continue, 
+												tokenLine, tokenColumn);
+										}
+									}
+								}
 							}
 						}
 					}

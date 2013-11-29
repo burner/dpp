@@ -59,6 +59,9 @@ public:
 	virtual bool visitIfStatement(IfStatement*);
 	virtual bool visitIfFollowStatement(IfFollowStatement*);
 	virtual bool visitPrimativeExpression(PrimativeExpression*);
+	virtual bool visitContinueExpression(ContinueStatement*);
+	virtual bool visitBreakStatement(BreakStatement*);
+	virtual bool visitForStatement(ForStatement*);
 
 private:
 	SymbolTableStack stack;

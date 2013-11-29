@@ -68,6 +68,9 @@
 		{ "Name" : "For", "Regex" : "for", "ConvertFunction" : "void" }
 		{ "Name" : "True", "Regex" : "true", "ConvertFunction" : "void" }
 		{ "Name" : "False", "Regex" : "false", "ConvertFunction" : "void" }
+		{ "Name" : "Break", "Regex" : "break", "ConvertFunction" : "void" }
+		{ "Name" : "Continue", "Regex" : "continue", 
+			"ConvertFunction" : "void" }
 	],
 	"Rules" : [
 		{ "Name" : "Start", "Expression" : [
@@ -95,9 +98,9 @@
 			]
 		},
 		{ "Name" : "StatementList", "Expression" : [
-			{ "Rule" : "Statement(stmt)" , "Id" : "Block" }
+			{ "Rule" : "Statement(stmt)" , "Id" : "Stmt" }
 			{ "Rule" : "Statement(stmt) ; StatementList(follow)" , 
-				"Id" : "BlockStatementList" }
+				"Id" : "StmtFollow" }
 			]
 		},
 		{ "Name" : "Statement", "Expression" : [
@@ -108,6 +111,21 @@
 			{ "Rule" : "ForStatement(forstmt)" , "Id" : "For" }
 			{ "Rule" : "WhileStatement(whilestmt)" , "Id" : "While" }
 			{ "Rule" : "DoWhileStatement(dowhilestmt)" , "Id" : "DoWhile" }
+			{ "Rule" : "BreakStatement(breakstmt)" , "Id" : "Break" }
+			{ "Rule" : "ContinueStatement(continuestmt)" , "Id" : "Continue" }
+			{ "Rule" : "VarDecl(decl)" , "Id" : "VarDecl" }
+			{ "Rule" : "FunctionDecl(fundecl)" , "Id" : "FunDecl" }
+			]
+		},
+		{ "Name" : "BreakStatement", "Expression" : [
+			{ "Rule" : "Break ; Semicolon", "Id" : "Simple"}
+			{ "Rule" : "Break ; Identifier(label) ; Semicolon", "Id" : "Label"}
+			]
+		},
+		{ "Name" : "ContinueStatement", "Expression" : [
+			{ "Rule" : "Continue ; Semicolon", "Id" : "Simple"}
+			{ "Rule" : "Continue ; Identifier(label) ; Semicolon", 
+				"Id" : "Label"}
 			]
 		},
 		{ "Name" : "DoWhileStatement", "Expression" : [
@@ -256,13 +274,38 @@
 			{ "Rule" : "AssignmentExpression(expr)" , "Id" : "Next" }
 			]
 		},
+		{ "Name" : "IdList", "Expression" : [
+			{ "Rule" : "Identifier(id)" , "Id" : "Id" }
+			{ "Rule" : "Identifier(id) ; IdList(Follow)" , "Id" : "IdFollow" }
+			]
+		}
 		{ "Name" : "Type", "Expression" : [
-			{ "Rule" : "BasicType(type)" , "Id" : "BasicType" },
-			{ "Rule" : "BasicType(type) ; TypeFollow(follow)" , 
-				"Id" : "BasicTypeFollow" },
+			{ "Rule" : "BasicType(type)" , "Id" : "BasicType" }
+			{ "Rule" : "IdList(idlist)" , "Id" : "IdList" }
+			{ "Rule" : "BasicType(type) ; TypeFollows(follows)" , 
+				"Id" : "BasicTypeFollows" }
+			{ "Rule" : "IdList(idlist) ; TypeFollows(follows)" , 
+				"Id" : "IdListFollows" }
 			]
 		},
+		{ "Name" : "TypeFollows", "Expression" : [
+			{ "Rule" : "TypeFollow(follow)", "Id" : "Follow" }
+			{ "Rule" : "TypeFollow(follow) ; TypeFollows(next)", 
+				"Id" : "FollowNext" }
+			]
+		}
+		{ "Name" : "Modifier", "Expression" : [
+			{ "Rule" : "Const", "Id" : "Const" }
+			]
+		}
+		{ "Name" : "TypeFollow", "Expression" : [
+			{ "Rule" : "Star", "Id" : "Pointer"}
+			{ "Rule" : "And", "Id" : "Ref"}
+			{ "Rule" : "Lbrack ; Rbrack", "Id" : "Array"}
+			]
+		}
 		{ "Name" : "BasicType", "Expression" : [
+			{ "Rule" : "Bool" , "Id" : "Bool" },
 			{ "Rule" : "Byte" , "Id" : "Byte" },
 			{ "Rule" : "Short" , "Id" : "Short" },
 			{ "Rule" : "Int" , "Id" : "Int" },
@@ -272,6 +315,8 @@
 			{ "Rule" : "Ushort" , "Id" : "Ushort" },
 			{ "Rule" : "Ulong" , "Id" : "Ulong" },
 			{ "Rule" : "Float" , "Id" : "Float" }
+			{ "Rule" : "Double" , "Id" : "Double" }
+			{ "Rule" : "Real" , "Id" : "Real" }
 			]
 		},
 		{ "Name" : "TypeFollow", "Expression" : [
@@ -318,6 +363,8 @@
 		# VarDeclDeferedInit
 		{ "Name" : "VarDeclDeferedInit", "Expression" : [
 			{ "Rule" : "Colon ; Type(type)" , "Id" : "Defered" }
+			{ "Rule" : "Colon ; Type(type) ; Lparen ; OrExpression(init) ;"\
+				"Rparen" , "Id" : "DeferedInit" }
 			]
 		},
 		{ "Name" : "AssignmentExpression", "Expression" : [

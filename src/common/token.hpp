@@ -45,6 +45,7 @@ enum class TokenType {
 	Bangis, // done				"!is"
 	Bool, // done				"bool"
 	Byte, // done				"byte"
+	Break, // done				"break"
 	Byte_Value,//				"0b[01]+b|0x[0-9af]+b|0o[0-8]b"
 	Case,		//				"case"
 	Cast,		//				"cast"
@@ -54,6 +55,7 @@ enum class TokenType {
 	Const, // done				"const"
 	Comma, // done				","
 	Concat, // done				"~"
+	Continue, // done			"continue
 	Concatassign, // done		"~="
 	Def,		//				"def"
 	Default,	//				"default"

@@ -256,3 +256,17 @@ bool SymbolTableVisitor::visitPrimativeExpression(PrimativeExpression* node) {
 	return true;
 }
 
+bool SymbolTableVisitor::visitContinueExpression(ContinueStatement* node) {
+	this->giveAstNodeCurrentSymbolTable(node);
+	return true;
+}
+
+bool SymbolTableVisitor::visitBreakStatement(BreakStatement* node) {
+	this->giveAstNodeCurrentSymbolTable(node);
+	return true;
+}
+
+bool SymbolTableVisitor::visitForStatement(ForStatement* node) {
+	this->giveAstNodeCurrentSymbolTable(node);
+	return true;
+}

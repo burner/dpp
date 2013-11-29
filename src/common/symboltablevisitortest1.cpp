@@ -135,3 +135,64 @@ UNITTEST(functionDecl4) {
 	ast->acceptVisitor(lv);
 	AS_T(worked);
 }
+
+UNITTEST(functionDecl5) {
+	auto ss = std::make_shared<std::stringstream>
+		("def int main() {\n"
+		 " var a(true); \n"
+		 " var b : bool(true); \n"
+		 " var c : bool(false); \n"
+		 " if(a ? b : c) {\n"
+		 "  for(; a < b; ) somelabel {\n"
+		 "   if(b == 0) {\n"
+		 "    break somelabel;\n"
+		 "   }\n"
+		 "  }\n"
+		 " }\n"
+		 "}");
+	Lexer l(ss);
+	Parser p(l);
+	auto ast = p.parseFunctionDecl();
+	SymbolTableVisitor stv;
+	ast->acceptVisitor(stv);
+
+	bool worked(true);
+	LambdaVisitor lv([&worked](const AstNode* n) {
+		worked = worked && n->getSymbolTable() != nullptr;
+		return n->getSymbolTable() != nullptr;
+	});
+	ast->acceptVisitor(lv);
+	AS_T(worked);
+}
+
+UNITTEST(functionDecl6) {
+	auto ss = std::make_shared<std::stringstream>
+		("def int main() {\n"
+		 " def bool fun() {\n"
+		 "  return false;\n"
+		 " }\n"
+		 " var a(true); \n"
+		 " var b : bool(true); \n"
+		 " var c : bool(false); \n"
+		 " if(a ? b : c) {\n"
+		 "  for(; a < b; ) somelabel {\n"
+		 "   if(b == 0 && fun()) {\n"
+		 "    break somelabel;\n"
+		 "   }\n"
+		 "  }\n"
+		 " }\n"
+		 "}");
+	Lexer l(ss);
+	Parser p(l);
+	auto ast = p.parseFunctionDecl();
+	SymbolTableVisitor stv;
+	ast->acceptVisitor(stv);
+
+	bool worked(true);
+	LambdaVisitor lv([&worked](const AstNode* n) {
+		worked = worked && n->getSymbolTable() != nullptr;
+		return n->getSymbolTable() != nullptr;
+	});
+	ast->acceptVisitor(lv);
+	AS_T(worked);
+}

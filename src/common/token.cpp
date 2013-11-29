@@ -194,6 +194,7 @@ std::string tokenTypeToString(const TokenType tt) {
 	case TokenType::Bangequal: return "BANGEQUAL";
 	case TokenType::Bangis: return "BANGIS";
 	case TokenType::Bool: return "BOOL";
+	case TokenType::Break: return "BREAK";
 	case TokenType::Byte: return "BYTE";
 	case TokenType::Byte_Value: return "BYTE_VALUE";
 	case TokenType::Case: return "CASE";
@@ -202,6 +203,7 @@ std::string tokenTypeToString(const TokenType tt) {
 	case TokenType::Char_Value: return "CHAR_VALUE";
 	case TokenType::Colon: return "COLON";
 	case TokenType::Comma: return "COMMA";
+	case TokenType::Continue: return "CONTINUE";
 	case TokenType::Concat: return "CONCAT";
 	case TokenType::Concatassign: return "CONCATASSIGN";
 	case TokenType::Const: return "CONST";

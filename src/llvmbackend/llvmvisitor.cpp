@@ -232,6 +232,36 @@ bool LLVMVisitor::visitPrimativeExpression(const PrimativeExpression*) { return 
 bool LLVMVisitor::leavePrimativeExpression(PrimativeExpression*) { return true; }
 bool LLVMVisitor::leavePrimativeExpression(const PrimativeExpression*) { return true; }
 
+bool LLVMVisitor::visitBreakStatement(BreakStatement*) { return true; }
+bool LLVMVisitor::visitBreakStatement(const BreakStatement*) { return true; }
+
+bool LLVMVisitor::leaveBreakStatement(BreakStatement*) { return true; }
+bool LLVMVisitor::leaveBreakStatement(const BreakStatement*) { return true; }
+
+bool LLVMVisitor::visitContinueStatement(ContinueStatement*) { return true; }
+bool LLVMVisitor::visitContinueStatement(const ContinueStatement*) { return true; }
+
+bool LLVMVisitor::leaveContinueStatement(ContinueStatement*) { return true; }
+bool LLVMVisitor::leaveContinueStatement(const ContinueStatement*) { return true; }
+
+bool LLVMVisitor::visitIdList(IdList*) { return true; }
+bool LLVMVisitor::visitIdList(const IdList*) { return true; }
+
+bool LLVMVisitor::leaveIdList(IdList*) { return true; }
+bool LLVMVisitor::leaveIdList(const IdList*) { return true; }
+
+bool LLVMVisitor::visitTypeFollows(TypeFollows*) { return true; }
+bool LLVMVisitor::visitTypeFollows(const TypeFollows*) { return true; }
+
+bool LLVMVisitor::leaveTypeFollows(TypeFollows*) { return true; }
+bool LLVMVisitor::leaveTypeFollows(const TypeFollows*) { return true; }
+
+bool LLVMVisitor::visitModifier(Modifier*) { return true; }
+bool LLVMVisitor::visitModifier(const Modifier*) { return true; }
+
+bool LLVMVisitor::leaveModifier(Modifier*) { return true; }
+bool LLVMVisitor::leaveModifier(const Modifier*) { return true; }
+
 bool LLVMVisitor::visitDecl(Decl*) {
 	ASSERT_T_MSG(false, "LLVMVisitor::visitDecl(Decl*) not implemented");
 	return false;
