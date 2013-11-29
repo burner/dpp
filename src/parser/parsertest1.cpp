@@ -25,6 +25,16 @@ UNITTEST(assign1) {
 	//ast->acceptVisitor(v);
 }
 
+UNITTEST(post1) {
+	auto ss = std::make_shared<std::stringstream>
+		("hello.world()");
+	Lexer l(ss);
+	Parser p(l);
+	auto ast = p.parseAssignmentExpression();
+	StdOutVisitor v(std::cout);
+	//ast->acceptVisitor(v);
+}
+
 UNITTEST(varDecl1) {
 	auto ss = std::make_shared<std::stringstream>
 		("var foo(10) ");

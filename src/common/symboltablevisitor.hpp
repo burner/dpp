@@ -31,7 +31,6 @@ public:
 	virtual bool visitArgument(Argument*);
 	virtual bool visitStart(Start*);
 	virtual bool visitTypeFollow(TypeFollow*);
-	virtual bool visitIterationStatement(IterationStatement*);
 	virtual bool visitType(Type*);
 	virtual bool visitAndAndExpression(AndAndExpression*);
 	virtual bool visitVarDeclDeferedInit(VarDeclDeferedInit*);
@@ -59,6 +58,7 @@ public:
 	virtual bool visitBranchStatement(BranchStatement*);
 	virtual bool visitIfStatement(IfStatement*);
 	virtual bool visitIfFollowStatement(IfFollowStatement*);
+	virtual bool visitPrimativeExpression(PrimativeExpression*);
 
 private:
 	SymbolTableStack stack;

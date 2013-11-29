@@ -74,11 +74,6 @@ bool LLVMVisitor::visitFunctionPrototypeDecl(const FunctionPrototypeDecl*) { ret
 
 bool LLVMVisitor::leaveFunctionPrototypeDecl(FunctionPrototypeDecl*) { return true; }
 bool LLVMVisitor::leaveFunctionPrototypeDecl(const FunctionPrototypeDecl*) { return true; }
-bool LLVMVisitor::visitIterationStatement(IterationStatement*) { return true; }
-bool LLVMVisitor::visitIterationStatement(const IterationStatement*) { return true; }
-
-bool LLVMVisitor::leaveIterationStatement(IterationStatement*) { return true; }
-bool LLVMVisitor::leaveIterationStatement(const IterationStatement*) { return true; }
 bool LLVMVisitor::visitType(Type*) { return true; }
 bool LLVMVisitor::visitType(const Type*) { return true; }
 
@@ -230,6 +225,12 @@ bool LLVMVisitor::visitIfStatement(const IfStatement*) { return true; }
 
 bool LLVMVisitor::leaveIfStatement(IfStatement*) { return true; }
 bool LLVMVisitor::leaveIfStatement(const IfStatement*) { return true; }
+
+bool LLVMVisitor::visitPrimativeExpression(PrimativeExpression*) { return true; }
+bool LLVMVisitor::visitPrimativeExpression(const PrimativeExpression*) { return true; }
+
+bool LLVMVisitor::leavePrimativeExpression(PrimativeExpression*) { return true; }
+bool LLVMVisitor::leavePrimativeExpression(const PrimativeExpression*) { return true; }
 
 bool LLVMVisitor::visitDecl(Decl*) {
 	ASSERT_T_MSG(false, "LLVMVisitor::visitDecl(Decl*) not implemented");

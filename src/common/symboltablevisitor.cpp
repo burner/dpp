@@ -114,11 +114,6 @@ bool SymbolTableVisitor::visitTypeFollow(TypeFollow* node) {
 	return true;
 }
 
-bool SymbolTableVisitor::visitIterationStatement(IterationStatement* node) {
-	this->giveAstNodeCurrentSymbolTable(node);
-	return true;
-}
-
 bool SymbolTableVisitor::visitType(Type* node) {
 	this->giveAstNodeCurrentSymbolTable(node);
 	return true;
@@ -255,3 +250,9 @@ bool SymbolTableVisitor::visitIfFollowStatement(IfFollowStatement* node) {
 	this->giveAstNodeCurrentSymbolTable(node);
 	return true;
 }
+
+bool SymbolTableVisitor::visitPrimativeExpression(PrimativeExpression* node) {
+	this->giveAstNodeCurrentSymbolTable(node);
+	return true;
+}
+

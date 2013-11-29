@@ -12,6 +12,8 @@
 		{ "Name" : "Const", "Regex" : "const", "ConvertFunction" : "void" },
 		{ "Name" : "Int_Value", "Regex" : "[0-9]+", 
 			"ConvertFunction" : "void" },
+		{ "Name" : "Float_Value", "Regex" : "[0-9]+.[0-9]+", 
+			"ConvertFunction" : "void" },
 		{ "Name" : "Identifier", "Regex" : "", "ConvertFunction" : "void" },
 		{ "Name" : "Float", "Regex" : "float", "ConvertFunction" : "void" },
 		{ "Name" : "Lparen", "Regex" : "(", "ConvertFunction" : "void" },
@@ -101,7 +103,6 @@
 		{ "Name" : "Statement", "Expression" : [
 			{ "Rule" : "BlockStatement(blockstmt)" , "Id" : "Block" }
 			{ "Rule" : "ExpressionStatement(exprstmt)" , "Id" : "Expr" }
-			{ "Rule" : "IterationStatement(iterstmt)" , "Id" : "Iteration" }
 			{ "Rule" : "ReturnStatement(retstmt)" , "Id" : "Return" }
 			{ "Rule" : "BranchStatement(branchstmt)" , "Id" : "Branch" }
 			{ "Rule" : "ForStatement(forstmt)" , "Id" : "For" }
@@ -244,13 +245,6 @@
 			{ "Rule" : "Lcurly ; Rcurly" , "Id" : "Empty" }
 			{ "Rule" : "Lcurly ; StatementList(stmtList) ; Rcurly" , 
 				"Id" : "StmtList" }
-			]
-		},
-		{ "Name" : "IterationStatement", "Expression" : [
-			{ "Rule" : "While ; Lparen ; Expression(expr) ; Rparen ; "\
-				"BlockStatement(stmt)" , "Id" : "While" }
-			{ "Rule" : "Do ; BlockStatement(stmt) ; While ; Lparen ; "\
-				"Expression(expr) ; Rparen ; Semicolon", "Id" : "While" }
 			]
 		},
 		{ "Name" : "ExpressionStatement", "Expression" : [
@@ -442,9 +436,11 @@
 			]
 		},
 		{ "Name" : "PostfixExpression", "Expression" : [
-			{ "Rule" : "PrimaryExpression(primaryExpr)", "Id" : "Ident" },
+			{ "Rule" : "PrimaryExpression(primaryExpr)", "Id" : "Primary" },
 			{ "Rule" : "PrimaryExpression(primaryExpr) ; "\
-				"PostfixNextExpression(follow)", "Id" : "IdentPostfixNext" },
+				"PostfixNextExpression(follow)", "Id" : "PrimaryFollow" },
+			{ "Rule" : "PrimativeExpression(primativeExpr)", 
+				"Id" : "Primative" },
 			]
 		},
 		{ "Name" : "PostfixNextExpression", "Expression" : [
@@ -469,11 +465,15 @@
 		{ "Name" : "PrimaryExpression", "Expression" : [
 			{ "Rule" : "Identifier(value)", 
 				"Id" : "PrimaryExpressionIdentifier" },
-			{ "Rule" : "Int_Value(value) ", "Id" : "Value" },
-			{ "Rule" : "True ", "Id" : "True" },
-			{ "Rule" : "False ", "Id" : "False" },
 			{ "Rule" : "Lparen ; Expression(expr) ; Rparen", 
 				"Id" : "PrimaryExpressionExpression" }
+			]
+		}
+		{ "Name" : "PrimativeExpression", "Expression" : [
+			{ "Rule" : "Int_Value(value) ", "Id" : "IntValue" },
+			{ "Rule" : "Float_Value(value) ", "Id" : "FloatValue" },
+			{ "Rule" : "True ", "Id" : "True" },
+			{ "Rule" : "False ", "Id" : "False" },
 			]
 		}
 	]
