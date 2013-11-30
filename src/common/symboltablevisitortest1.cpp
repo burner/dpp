@@ -141,25 +141,6 @@ UNITTEST(functionDecl3) {
 	AS_T(worked);
 }
 
-UNITTEST(externDecl1) {
-	auto ss = std::make_shared<std::stringstream>
-		("extern def int read(var a : int, var b : float);"
-		"extern def int write(var a : int, var b : float);");
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseDecl();
-	SymbolTableVisitor stv;
-	ast->acceptVisitor(stv);
-
-	bool worked(true);
-	LambdaVisitor lv([&worked](const AstNode* n) {
-		worked = worked && n->getSymbolTable() != nullptr;
-		return n->getSymbolTable() != nullptr;
-	});
-	ast->acceptVisitor(lv);
-	AS_T(worked);
-}
-
 UNITTEST(functionDecl4) {
 	auto ss = std::make_shared<std::stringstream>
 		("def int main() {"
@@ -226,10 +207,31 @@ UNITTEST(functionDecl6) {
 		 "   }\n"
 		 "  }\n"
 		 " }\n"
+		 " return true;"
 		 "}");
 	Lexer l(ss);
 	Parser p(l);
 	auto ast = p.parseFunctionDecl();
+	SymbolTableVisitor stv;
+	ast->acceptVisitor(stv);
+
+	bool worked(true);
+	LambdaVisitor lv([&worked](const AstNode* n) {
+		worked = worked && n->getSymbolTable() != nullptr;
+		return n->getSymbolTable() != nullptr;
+	});
+	ast->acceptVisitor(lv);
+	AS_T(worked);
+}
+
+UNITTEST(externDecl1) {
+	auto ss = std::make_shared<std::stringstream>(
+		"extern def int read(var a : int, var b : float);"
+		"extern def int write(var a : int, var b : float);"
+		"extern def int print(var a : const char*);");
+	Lexer l(ss);
+	Parser p(l);
+	auto ast = p.parseDecl();
 	SymbolTableVisitor stv;
 	ast->acceptVisitor(stv);
 
