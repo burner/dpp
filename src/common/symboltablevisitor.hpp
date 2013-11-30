@@ -62,6 +62,12 @@ public:
 	virtual bool visitContinueExpression(ContinueStatement*);
 	virtual bool visitBreakStatement(BreakStatement*);
 	virtual bool visitForStatement(ForStatement*);
+	virtual bool visitUnnamedArgList(UnnamedArgList*);
+	virtual bool visitUnnamedArg(UnnamedArg*);
+	virtual bool visitTypeDelFun(TypeDelFun*);
+	virtual bool visitTypeFollows(TypeFollows*);
+	virtual bool visitInitLists(InitLists*);
+	virtual bool visitModifier(Modifier*);
 
 private:
 	SymbolTableStack stack;

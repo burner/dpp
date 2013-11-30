@@ -10,7 +10,14 @@
 		{ "Name" : "Long", "Regex" : "long", "ConvertFunction" : "void" },
 		{ "Name" : "Ulong", "Regex" : "ulong", "ConvertFunction" : "void" },
 		{ "Name" : "Const", "Regex" : "const", "ConvertFunction" : "void" },
-		{ "Name" : "Int_Value", "Regex" : "[0-9]+", 
+		{ "Name" : "Byte_Value", "Regex" : "[0-9]+b", 
+		{ "Name" : "Short_Value", "Regex" : "[0-9]+s", 
+		{ "Name" : "Int_Value", "Regex" : "[0-9]+i", 
+		{ "Name" : "Long_Value", "Regex" : "[0-9]+l", 
+		{ "Name" : "Ubyte_Value", "Regex" : "[0-9]+b", 
+		{ "Name" : "Ushort_Value", "Regex" : "[0-9]+s", 
+		{ "Name" : "Uint_Value", "Regex" : "[0-9]+i", 
+		{ "Name" : "Ulong_Value", "Regex" : "[0-9]+l", 
 			"ConvertFunction" : "void" },
 		{ "Name" : "Float_Value", "Regex" : "[0-9]+.[0-9]+", 
 			"ConvertFunction" : "void" },
@@ -275,8 +282,30 @@
 			]
 		},
 		{ "Name" : "IdList", "Expression" : [
-			{ "Rule" : "Identifier(id)" , "Id" : "Id" }
-			{ "Rule" : "Identifier(id) ; IdList(Follow)" , "Id" : "IdFollow" }
+			{ "Rule" : "Identifier(id)" , "Id" : "Ident" }
+			{ "Rule" : "Identifier(id) ; IdList(Follow)" , 
+				"Id" : "IdentFollow" }
+			]
+		}
+		{ "Name" : "TypeDelFun", "Expression" : [
+			# without mod
+			{ "Rule" : "Type(type) ; DelOrFun(kind) ; Lparen ; Rparen" , 
+				"Id" : "WithoutArgList"}
+			{ "Rule" : "Type(type) ; DelOrFun(kind) ; Lparen ; "\
+				"UnnamedArgList(argList) ; Rparen" , "Id" : "WithArgList"}
+			{ "Rule" : "Type(type) " , "Id" : "Type"}
+			# with mod
+			{ "Rule" : "Modifier(modifier) ; Type(type) ; DelOrFun(kind) ; "\
+				"Lparen; Rparen" , "Id" : "ModWithoutArgList"}
+			{ "Rule" : "Modifier(modifier) ; Type(type) ; DelOrFun(kind) ; "\
+				"Lparen ; UnnamedArgList(argList) ; Rparen" , 
+				"Id" : "ModWithArgList"}
+			{ "Rule" : "Modifier(modifier) ; Type(type) " , "Id" : "ModType"}
+			]
+		}
+		{ "Name" : "DelOrFun", "Expression" : [
+			{ "Rule" : "Delegate", "Id" : "Delegate"}
+			{ "Rule" : "Function", "Id" : "Function"}
 			]
 		}
 		{ "Name" : "Type", "Expression" : [
@@ -302,6 +331,10 @@
 			{ "Rule" : "Star", "Id" : "Pointer"}
 			{ "Rule" : "And", "Id" : "Ref"}
 			{ "Rule" : "Lbrack ; Rbrack", "Id" : "Array"}
+			{ "Rule" : "Modifier(modifier) ; Star", "Id" : "ModPointer"}
+			{ "Rule" : "Modifier(modifier) ; And", "Id" : "ModRef"}
+			{ "Rule" : "Modifier(modifier) ; Lbrack ; Rbrack", 
+				"Id" : "ModArray"}
 			]
 		}
 		{ "Name" : "BasicType", "Expression" : [
@@ -338,6 +371,17 @@
 				"Id" : "ConstNameType"}
 			]
 		},
+		{ "Name" : "UnnamedArgList", "Expression" : [
+			{ "Rule" : "UnnamedArg(arg)", "Id" : "Single"}
+			{ "Rule" : "UnnamedArg(arg) ; Comma ; UnnamedArgList(follow)", 
+				"Id" : "Multiple"}
+			]
+		},
+		{ "Name" : "UnnamedArg", "Expression" : [
+			{ "Rule" : "Var ; Type(type) ", "Id" : "VarType"}
+			{ "Rule" : "Const ; Type(type) ", "Id" : "ConstType"}
+			]
+		},
 		{ "Name" : "VarDecl", "Expression" : [
 			{ "Rule" : "VarDeclPrefix(varPrefix) ; VarDeclDirectInit(direct)", 
 				"Id" : "VarDeclDirect"}
@@ -345,6 +389,8 @@
 				"Id" : "VarDeclDefered"}
 			{ "Rule" : "ConstDeclPrefix(constPrefix) ; "\
 				"VarDeclDirectInit(direct)", "Id" : "ConstDeclDirect"}
+			{ "Rule" : "ConstDeclPrefix(constPrefix) ; "\
+				"VarDeclDeferedInit(defered)", "Id" : "ConstDeclDefered"}
 			]
 		},
 		{ "Name" : "VarDeclPrefix", "Expression" : [
@@ -356,15 +402,21 @@
 			]
 		},
 		{ "Name" : "VarDeclDirectInit", "Expression" : [
-			{ "Rule" : "Lparen ; OrOrExpression(init) ; Rparen" , 
+			{ "Rule" : "Lparen ; InitLists(init) ; Rparen" , 
 				"Id" : "Direct" },
 			]
 		},
+		{ "Name" : "InitLists", "Expression" : [
+			{ "Rule" : "ConditionalExpression(expr)", "Id" : "Single" }
+			{ "Rule" : "ConditionalExpression(expr) ; Comma ; "\
+				"InitLists(follow)", "Id" : "Multiple" }
+			]
+		}
 		# VarDeclDeferedInit
 		{ "Name" : "VarDeclDeferedInit", "Expression" : [
-			{ "Rule" : "Colon ; Type(type)" , "Id" : "Defered" }
-			{ "Rule" : "Colon ; Type(type) ; Lparen ; OrExpression(init) ;"\
-				"Rparen" , "Id" : "DeferedInit" }
+			{ "Rule" : "Colon ; TypeDelFun(type)" , "Id" : "Defered" }
+			{ "Rule" : "Colon ; TypeDelFun(type) ; "\
+				"Lparen ; InitLists(direct) ; Rparen", "Id" : "DeferedInit"}
 			]
 		},
 		{ "Name" : "AssignmentExpression", "Expression" : [

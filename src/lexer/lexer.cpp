@@ -509,6 +509,22 @@ Token Lexer::nextToken() {
 							}
 						}
 					}
+				} else if(curInput == 'l') { // delegate
+					if(curInput == 'e') { 
+						if(getNextChar() == 'g') {
+							if(getNextChar() == 'a') {
+								if(getNextChar() == 't') {
+									if(getNextChar() == 'e') {
+										if(isTokenStop(getNextChar())) {
+											readNext = false;
+											return Token(TokenType::Delegate, 
+												tokenLine, tokenColumn);
+										}
+									}
+								}
+							}
+						}
+					}
 				}
 			}
 			goto identifier;

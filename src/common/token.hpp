@@ -58,6 +58,7 @@ enum class TokenType {
 	Continue, // done			"continue
 	Concatassign, // done		"~="
 	Def,		//				"def"
+	Delegate,	//				"delegate"
 	Default,	//				"default"
 	Div, // done				"/"
 	Divassign, // done			"/="
@@ -77,6 +78,7 @@ enum class TokenType {
 	Float_Value, //				"[0-9]+.[0-9]+"
 	For,	//					"for"
 	Foreach,	//				"foreach"
+	Function,	//				"function"
 	Greater, // done			">"
 	Greaterequal, // done 		">="
 	Identifier,	//				"[a-zA-Z_]+"

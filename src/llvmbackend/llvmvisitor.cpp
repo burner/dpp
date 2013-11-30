@@ -262,6 +262,36 @@ bool LLVMVisitor::visitModifier(const Modifier*) { return true; }
 bool LLVMVisitor::leaveModifier(Modifier*) { return true; }
 bool LLVMVisitor::leaveModifier(const Modifier*) { return true; }
 
+bool LLVMVisitor::visitInitLists(InitLists*) { return true; }
+bool LLVMVisitor::visitInitLists(const InitLists*) { return true; }
+
+bool LLVMVisitor::leaveInitLists(InitLists*) { return true; }
+bool LLVMVisitor::leaveInitLists(const InitLists*) { return true; }
+
+bool LLVMVisitor::visitDelOrFun(DelOrFun*) { return true; }
+bool LLVMVisitor::visitDelOrFun(const DelOrFun*) { return true; }
+
+bool LLVMVisitor::leaveDelOrFun(DelOrFun*) { return true; }
+bool LLVMVisitor::leaveDelOrFun(const DelOrFun*) { return true; }
+
+bool LLVMVisitor::visitUnnamedArgList(UnnamedArgList*) { return true; }
+bool LLVMVisitor::visitUnnamedArgList(const UnnamedArgList*) { return true; }
+
+bool LLVMVisitor::leaveUnnamedArgList(UnnamedArgList*) { return true; }
+bool LLVMVisitor::leaveUnnamedArgList(const UnnamedArgList*) { return true; }
+
+bool LLVMVisitor::visitUnnamedArg(UnnamedArg*) { return true; }
+bool LLVMVisitor::visitUnnamedArg(const UnnamedArg*) { return true; }
+
+bool LLVMVisitor::leaveUnnamedArg(UnnamedArg*) { return true; }
+bool LLVMVisitor::leaveUnnamedArg(const UnnamedArg*) { return true; }
+
+bool LLVMVisitor::visitTypeDelFun(TypeDelFun*) { return true; }
+bool LLVMVisitor::visitTypeDelFun(const TypeDelFun*) { return true; }
+
+bool LLVMVisitor::leaveTypeDelFun(TypeDelFun*) { return true; }
+bool LLVMVisitor::leaveTypeDelFun(const TypeDelFun*) { return true; }
+
 bool LLVMVisitor::visitDecl(Decl*) {
 	ASSERT_T_MSG(false, "LLVMVisitor::visitDecl(Decl*) not implemented");
 	return false;

@@ -8,7 +8,7 @@ int main() {
 	SweetLogger::enableLogger(1);
 	auto testsPassed = Unit::runTests();
 	auto numTests = Unit::getTests().size();
-	LOG(1, "Number of tests run '%u' all passed '%s'", numTests, 
+	LOG(1, "Number of tests ran '%u' all passed '%s'", numTests, 
 		!testsPassed ? "true" : "false");
 	return 0;
 }

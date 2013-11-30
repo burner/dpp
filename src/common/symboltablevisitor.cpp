@@ -270,3 +270,33 @@ bool SymbolTableVisitor::visitForStatement(ForStatement* node) {
 	this->giveAstNodeCurrentSymbolTable(node);
 	return true;
 }
+
+bool SymbolTableVisitor::visitUnnamedArgList(UnnamedArgList* node) {
+	this->giveAstNodeCurrentSymbolTable(node);
+	return true;
+}
+
+bool SymbolTableVisitor::visitUnnamedArg(UnnamedArg* node) {
+	this->giveAstNodeCurrentSymbolTable(node);
+	return true;
+}
+
+bool SymbolTableVisitor::visitTypeDelFun(TypeDelFun* node) {
+	this->giveAstNodeCurrentSymbolTable(node);
+	return true;
+}
+
+bool SymbolTableVisitor::visitTypeFollows(TypeFollows* node) {
+	this->giveAstNodeCurrentSymbolTable(node);
+	return true;
+}
+
+bool SymbolTableVisitor::visitInitLists(InitLists* node) {
+	this->giveAstNodeCurrentSymbolTable(node);
+	return true;
+}
+
+bool SymbolTableVisitor::visitModifier(Modifier* node) {
+	this->giveAstNodeCurrentSymbolTable(node);
+	return true;
+}
