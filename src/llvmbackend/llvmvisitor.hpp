@@ -1,10 +1,14 @@
 #pragma once
 
+#include <stdexcept>
+#include <stack>
+
 #include <llvm/IR/Module.h>
 #include <llvm/IR/Function.h>
 #include <llvm/IR/Type.h>
 #include <llvm/IR/DerivedTypes.h>
 #include <llvm/IR/LLVMContext.h>
+#include <llvm/IR/IRBuilder.h>
 #include <llvm/PassManager.h>
 #include <llvm/IR/Instructions.h>
 #include <llvm/IR/CallingConv.h>
@@ -19,10 +23,22 @@
 
 #include <visitor.hpp>
 
+class LLVMVisitorException : public std::exception {
+public:
+	LLVMVisitorException(const std::string&,Loc);
+	const char* what() const throw();
+private:
+	std::string message;
+	Loc loc;
+};
+
 class LLVMVisitor : public Visitor {
 	#include <visitorinclude>
 public:
 	LLVMVisitor();
+	std::stack<llvm::Value*> valueStack;
+
 private:
 	llvm::Module *module;
+	llvm::IRBuilder<> builder;
 };

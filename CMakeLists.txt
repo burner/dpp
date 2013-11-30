@@ -164,6 +164,7 @@ set(lexer_header
 # llvm library
 set(llvm_sources 
 	src/llvmbackend/llvmvisitor.cpp
+	src/llvmbackend/llvmvisitortest1.cpp
 )
 
 set(llvm_header 

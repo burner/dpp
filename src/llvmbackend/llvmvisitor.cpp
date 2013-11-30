@@ -1,18 +1,158 @@
 #include <ast.hpp>
 #include <llvmvisitor.hpp>
 
+#include <format.hpp>
 #include <unit.hpp>
+#include <logger.hpp>
+
+LLVMVisitorException::LLVMVisitorException(const std::string& m, Loc l) :
+		message(m), loc(l)
+{
+}
+
+const char* LLVMVisitorException::what() const throw() {
+	return format("msg '%s' loc '%s'", this->message, this->loc.toString()).
+		c_str();
+}
 
 LLVMVisitor::LLVMVisitor() : 
-		module(new llvm::Module("main", llvm::getGlobalContext())) 
+		module(new llvm::Module("main", llvm::getGlobalContext())),
+		builder(llvm::getGlobalContext())
 {
 
 }
 
-bool LLVMVisitor::visitOrOrExpression(OrOrExpression*) { return true; }
+bool LLVMVisitor::visitPrimativeExpression(PrimativeExpression* prim) { 
+	LOG("%s", prim->getRule());
+	switch(prim->getRule()) {
+	case PrimativeExpressionEnum::ByteValue:
+		this->valueStack.push(
+			llvm::ConstantInt::get(
+				llvm::Type::getInt8Ty(llvm::getGlobalContext()
+			),
+			prim->getValue().value.charValue
+		));
+		return true;
+	case PrimativeExpressionEnum::DoubleValue:
+		this->valueStack.push(
+			llvm::ConstantFP::get(
+				llvm::Type::getDoubleTy(llvm::getGlobalContext()
+			),
+			prim->getValue().value.doubleValue
+		));
+		return true;
+	case PrimativeExpressionEnum::False:
+		this->valueStack.push(
+			llvm::ConstantInt::get(
+				llvm::Type::getInt1Ty(llvm::getGlobalContext()
+			), false
+		));
+		return true;
+	case PrimativeExpressionEnum::FloatValue:
+		this->valueStack.push(
+			llvm::ConstantFP::get(
+				llvm::Type::getFloatTy(llvm::getGlobalContext()
+			),
+			prim->getValue().value.floatValue
+		));
+		return true;
+	case PrimativeExpressionEnum::IntValue:
+		this->valueStack.push(
+			llvm::ConstantInt::get(
+				llvm::Type::getInt32Ty(llvm::getGlobalContext()
+			),
+			prim->getValue().value.intValue
+		));
+		return true;
+	case PrimativeExpressionEnum::LongValue:
+		this->valueStack.push(
+			llvm::ConstantInt::get(
+				llvm::Type::getInt64Ty(llvm::getGlobalContext()
+			),
+			prim->getValue().value.intValue
+		));
+		return true;
+	case PrimativeExpressionEnum::RealValue:
+		this->valueStack.push(
+			llvm::ConstantFP::get(
+				llvm::Type::getX86_FP80Ty(llvm::getGlobalContext()
+			),
+			prim->getValue().value.longDoubleValue
+		));
+		return true;
+	case PrimativeExpressionEnum::ShortValue:
+		this->valueStack.push(
+			llvm::ConstantInt::get(
+				llvm::Type::getInt16Ty(llvm::getGlobalContext()
+			),
+			prim->getValue().value.shortValue
+		));
+		return true;
+	case PrimativeExpressionEnum::StringValue:
+		break;
+	case PrimativeExpressionEnum::True:
+		this->valueStack.push(
+			llvm::ConstantInt::get(
+				llvm::Type::getInt1Ty(llvm::getGlobalContext()
+			), true
+		));
+		return true;
+	case PrimativeExpressionEnum::UByteValue:
+		break;
+	case PrimativeExpressionEnum::UIntValue:
+		break;
+	case PrimativeExpressionEnum::ULongValue:
+		break;
+	case PrimativeExpressionEnum::UShortValue:
+		break;
+	default:
+		break;
+	}
+	throw LLVMVisitorException(
+		format("PrimativeExpression Rule('%d') not implemented",
+			prim->getRule()
+		), prim->getValue().getLocation()
+	);
+	return true; 
+}
+
+bool LLVMVisitor::visitPrimaryExpression(PrimaryExpression*) { 
+	return true; 
+}
+
+bool LLVMVisitor::visitPostfixExpression(PostfixExpression*) {
+   	return true; 
+}
+
+bool LLVMVisitor::visitOrOrExpression(OrOrExpression*) { 
+	return true; 
+}
+
+bool LLVMVisitor::leaveOrOrExpression(OrOrExpression* expr) { 
+	if(expr->getRule() == OrOrExpressionEnum::LogicalOr) {
+		ASSERT_T_MSG(this->valueStack.size() >= 2u, 
+			format("%u stackSize(%u)", expr->getId(), this->valueStack.size())
+		);
+
+		auto lhs = this->valueStack.top();
+		this->valueStack.pop();
+		auto rhs = this->valueStack.top();
+		this->valueStack.pop();
+
+		this->valueStack.push(
+			this->builder.CreateOr(lhs, rhs, "LogicalOr")
+		);
+		this->valueStack.top()->dump();
+	}
+	return true; 
+}
+
+//
+// empty
+//
+
 bool LLVMVisitor::visitOrOrExpression(const OrOrExpression*) { return true; }
 
-bool LLVMVisitor::leaveOrOrExpression(OrOrExpression*) { return true; }
 bool LLVMVisitor::leaveOrOrExpression(const OrOrExpression*) { return true; }
 bool LLVMVisitor::visitAssignmentExpression(AssignmentExpression*) { return true; }
 bool LLVMVisitor::visitAssignmentExpression(const AssignmentExpression*) { return true; }
@@ -79,7 +219,6 @@ bool LLVMVisitor::visitType(const Type*) { return true; }
 
 bool LLVMVisitor::leaveType(Type*) { return true; }
 bool LLVMVisitor::leaveType(const Type*) { return true; }
-bool LLVMVisitor::visitPostfixExpression(PostfixExpression*) { return true; }
 bool LLVMVisitor::visitPostfixExpression(const PostfixExpression*) { return true; }
 
 bool LLVMVisitor::leavePostfixExpression(PostfixExpression*) { return true; }
@@ -179,7 +318,6 @@ bool LLVMVisitor::visitPostfixNextExpression(const PostfixNextExpression*) { ret
 
 bool LLVMVisitor::leavePostfixNextExpression(PostfixNextExpression*) { return true; }
 bool LLVMVisitor::leavePostfixNextExpression(const PostfixNextExpression*) { return true; }
-bool LLVMVisitor::visitPrimaryExpression(PrimaryExpression*) { return true; }
 bool LLVMVisitor::visitPrimaryExpression(const PrimaryExpression*) { return true; }
 
 bool LLVMVisitor::leavePrimaryExpression(PrimaryExpression*) { return true; }
@@ -226,7 +364,6 @@ bool LLVMVisitor::visitIfStatement(const IfStatement*) { return true; }
 bool LLVMVisitor::leaveIfStatement(IfStatement*) { return true; }
 bool LLVMVisitor::leaveIfStatement(const IfStatement*) { return true; }
 
-bool LLVMVisitor::visitPrimativeExpression(PrimativeExpression*) { return true; }
 bool LLVMVisitor::visitPrimativeExpression(const PrimativeExpression*) { return true; }
 
 bool LLVMVisitor::leavePrimativeExpression(PrimativeExpression*) { return true; }
@@ -294,20 +431,20 @@ bool LLVMVisitor::leaveTypeDelFun(const TypeDelFun*) { return true; }
 
 bool LLVMVisitor::visitDecl(Decl*) {
 	ASSERT_T_MSG(false, "LLVMVisitor::visitDecl(Decl*) not implemented");
-	return false;
+	return true;
 }
 
 bool LLVMVisitor::visitDecl(const Decl*) {
 	ASSERT_T_MSG(false, "LLVMVisitor::visitDecl(const Decl*) not implemented");
-	return false;
+	return true;
 }
 
 bool LLVMVisitor::leaveDecl(Decl*) {
 	ASSERT_T_MSG(false, "LLVMVisitor::leaveDecl(Decl*) not implemented");
-	return false;
+	return true;
 }
 
 bool LLVMVisitor::leaveDecl(const Decl*) {
 	ASSERT_T_MSG(false, "LLVMVisitor::leaveDecl(const Decl*) not implemented");
-	return false;
+	return true;
 }

@@ -765,6 +765,16 @@ Token Lexer::nextToken() {
 						}
 					}
 				}
+			} else if(curInput == 'r') { // true
+				if(getNextChar() == 'u') {
+					if(getNextChar() == 'e') {
+						if(isTokenStop(getNextChar())) {
+							readNext = false;
+							return Token(TokenType::True, 
+								tokenLine, tokenColumn);
+						}
+					}
+				}
 			}
 			goto identifier;
 		case 'v':
