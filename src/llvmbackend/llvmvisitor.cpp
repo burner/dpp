@@ -5,6 +5,25 @@
 #include <unit.hpp>
 #include <logger.hpp>
 
+#define LLVMDump(v) llvmDumpImpl(v, __LINE__, __FILE__)
+
+inline std::string shortenString(const std::string& str) {
+	size_t idx = str.rfind('/');
+	if(idx == std::string::npos) {
+		return str;
+	} else {
+		return str.substr(idx+1);
+	}
+}
+
+template<typename T>
+void llvmDumpImpl(T t, int line, const char* file) {
+	format(std::cout, "%s:%u ", shortenString(file), line);
+	llvm::raw_os_ostream sstream(std::cout);
+	sstream<<(*t);
+	std::cout<<std::endl;
+}
+
 LLVMVisitorException::LLVMVisitorException(const std::string& m, Loc l) :
 		message(m), loc(l)
 {
@@ -124,10 +143,6 @@ bool LLVMVisitor::visitPostfixExpression(PostfixExpression*) {
    	return true; 
 }
 
-bool LLVMVisitor::visitOrOrExpression(OrOrExpression*) { 
-	return true; 
-}
-
 bool LLVMVisitor::leaveOrOrExpression(OrOrExpression* expr) { 
 	if(expr->getRule() == OrOrExpressionEnum::LogicalOr) {
 		ASSERT_T_MSG(this->valueStack.size() >= 2u, 
@@ -142,14 +157,94 @@ bool LLVMVisitor::leaveOrOrExpression(OrOrExpression* expr) {
 		this->valueStack.push(
 			this->builder.CreateOr(lhs, rhs, "LogicalOr")
 		);
-		this->valueStack.top()->dump();
+
+		LLVMDump(this->valueStack.top());
 	}
 	return true; 
+}
+
+bool LLVMVisitor::leaveAndAndExpression(AndAndExpression* expr) { 
+	if(expr->getRule() == AndAndExpressionEnum::LogicalAnd) {
+		ASSERT_T_MSG(this->valueStack.size() >= 2u, 
+			format("%u stackSize(%u)", expr->getId(), this->valueStack.size())
+		);
+
+		auto rhs = this->valueStack.top();
+		this->valueStack.pop();
+		auto lhs = this->valueStack.top();
+		this->valueStack.pop();
+
+		this->valueStack.push(
+			this->builder.CreateAnd(lhs, rhs, "LogicalOr")
+		);
+
+		LLVMDump(this->valueStack.top());
+	}
+	return true; 
+}
+
+bool LLVMVisitor::leaveAddExpression(AddExpression* expr) {
+	if(expr->getRule() == AddExpressionEnum::Plus
+			|| expr->getRule() == AddExpressionEnum::Minus)
+	{
+		ASSERT_T_MSG(this->valueStack.size() >= 2u, 
+			format("%u stackSize(%u)", expr->getId(), this->valueStack.size())
+		);
+
+		auto rhs = this->valueStack.top();
+		auto rhsType = rhs->getType();
+		this->valueStack.pop();
+		auto lhs = this->valueStack.top();
+		auto lhsType = lhs->getType();
+		this->valueStack.pop();
+		LLVMDump(lhs);
+		LLVMDump(rhs);
+
+		ASSERT_EQ(valueStack.size(), 0);
+		if(rhsType->isIntegerTy() && rhsType->isIntegerTy()) {
+			if(rhsType->getIntegerBitWidth() == lhsType->getIntegerBitWidth()) {
+				this->valueStack.push(
+					expr->getRule() == AddExpressionEnum::Plus ?
+						this->builder.CreateAdd(lhs, rhs, "Add") :
+						this->builder.CreateSub(lhs, rhs, "Sub")
+				);
+			} else {
+				throw LLVMVisitorException(format("%s operation"
+					" between Integers of different size lhs(%u) rhs(%u)",
+					expr->getRule() == AddExpressionEnum::Plus ? "Add" : 
+					"Minus", lhsType->getIntegerBitWidth(),
+					rhsType->getIntegerBitWidth()), Loc());
+			}
+		}
+		if((rhsType->isFloatTy() || rhsType->isDoubleTy() ||
+				rhsType->isX86_FP80Ty()) && 
+				rhsType->getTypeID() == lhsType->getTypeID()) {
+			this->valueStack.push(
+				expr->getRule() == AddExpressionEnum::Plus ?
+					this->builder.CreateFAdd(lhs, rhs, "Add") :
+					this->builder.CreateFSub(lhs, rhs, "Sub")
+			);
+		} else {
+			throw LLVMVisitorException(format("%s operation"
+				" between different float types of different size "
+				"lhs(%u) rhs(%u)",
+				expr->getRule() == AddExpressionEnum::Plus ? "Add" : 
+				"Minus", lhsType->getTypeID(),
+				rhsType->getTypeID()), Loc());
+		}
+		
+		ASSERT_EQ(valueStack.size(), 1);
+
+		LLVMDump(this->valueStack.top());
+	}
+	return true;
 }
 
 //
 // empty
 //
+
+bool LLVMVisitor::visitOrOrExpression(OrOrExpression*) { return true; }
 
 bool LLVMVisitor::visitOrOrExpression(const OrOrExpression*) { return true; }
 
@@ -231,7 +326,6 @@ bool LLVMVisitor::leaveFunctionDecl(const FunctionDecl*) { return true; }
 bool LLVMVisitor::visitAndAndExpression(AndAndExpression*) { return true; }
 bool LLVMVisitor::visitAndAndExpression(const AndAndExpression*) { return true; }
 
-bool LLVMVisitor::leaveAndAndExpression(AndAndExpression*) { return true; }
 bool LLVMVisitor::leaveAndAndExpression(const AndAndExpression*) { return true; }
 bool LLVMVisitor::visitVarDeclDeferedInit(VarDeclDeferedInit*) { return true; }
 bool LLVMVisitor::visitVarDeclDeferedInit(const VarDeclDeferedInit*) { return true; }
@@ -293,10 +387,9 @@ bool LLVMVisitor::visitShiftExpression(const ShiftExpression*) { return true; }
 
 bool LLVMVisitor::leaveShiftExpression(ShiftExpression*) { return true; }
 bool LLVMVisitor::leaveShiftExpression(const ShiftExpression*) { return true; }
-bool LLVMVisitor::visitAddExpression(AddExpression*) { return true; }
 bool LLVMVisitor::visitAddExpression(const AddExpression*) { return true; }
 
-bool LLVMVisitor::leaveAddExpression(AddExpression*) { return true; }
+bool LLVMVisitor::visitAddExpression(AddExpression*) { return true; }
 bool LLVMVisitor::leaveAddExpression(const AddExpression*) { return true; }
 bool LLVMVisitor::visitMulExpression(MulExpression*) { return true; }
 bool LLVMVisitor::visitMulExpression(const MulExpression*) { return true; }
