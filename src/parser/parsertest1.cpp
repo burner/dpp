@@ -4,127 +4,101 @@
 #include <outvisitor.hpp>
 #include <dotvisitor.hpp>
 #include <llvmvisitor.hpp>
+#include <unittesthelper.hpp>
 
 UNITTEST(rel1) {
-	auto ss = std::make_shared<std::stringstream>
-		("hello <= (foobar)");
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseOrOrExpression();
+	LexParse lp("hello <= (foobar)");
+	auto ast = lp.parser.parseOrOrExpression();
 	StdOutVisitor v(std::cout);
 	//ast->acceptVisitor(v);
 }
 
 UNITTEST(assign1) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("hello = (foobar)");
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseAssignmentExpression();
+	auto ast = lp.parser.parseAssignmentExpression();
 	StdOutVisitor v(std::cout);
 	//ast->acceptVisitor(v);
 }
 
 UNITTEST(post1) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("hello.world()");
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseAssignmentExpression();
+	auto ast = lp.parser.parseAssignmentExpression();
 	StdOutVisitor v(std::cout);
 	//ast->acceptVisitor(v);
 }
 
 UNITTEST(varDecl1) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("var foo(10) ");
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseVarDecl();
+	auto ast = lp.parser.parseVarDecl();
 	StdOutVisitor v(std::cout);
 	//ast->acceptVisitor(v);
 }
 
 UNITTEST(varDecl2) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("var bar : int");
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseVarDecl();
+	auto ast = lp.parser.parseVarDecl();
 	StdOutVisitor v(std::cout);
 	//ast->acceptVisitor(v);
 }
 
 UNITTEST(argList1) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("var bar : int, var foo : float");
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseArgumentList();
+	auto ast = lp.parser.parseArgumentList();
 	StdOutVisitor v(std::cout);
 	//ast->acceptVisitor(v);
 }
 
 UNITTEST(blockStmt1) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("{}");
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseStatement();
+	auto ast = lp.parser.parseStatement();
 	StdOutVisitor v(std::cout);
 	//ast->acceptVisitor(v);
 }
 UNITTEST(blockStmt2) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("{{}}");
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseStatement();
+	auto ast = lp.parser.parseStatement();
 	StdOutVisitor v(std::cout);
 	//ast->acceptVisitor(v);
 }
 UNITTEST(blockStmt3) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("{{}{}}");
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseStatement();
+	auto ast = lp.parser.parseStatement();
 	StdOutVisitor v(std::cout);
 	//ast->acceptVisitor(v);
 }
 UNITTEST(blockStmt4) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("{foobar();}");
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseStatement();
+	auto ast = lp.parser.parseStatement();
 	StdOutVisitor v(std::cout);
 	//ast->acceptVisitor(v);
 }
 UNITTEST(iterStmt1) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("{ while(bar()) { }}");
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseStatement();
+	auto ast = lp.parser.parseStatement();
 	StdOutVisitor v(std::cout);
 	//ast->acceptVisitor(v);
 }
 UNITTEST(function1) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("def int foo() {}");
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseFunctionDecl();
+	auto ast = lp.parser.parseFunctionDecl();
 	StdOutVisitor v(std::cout);
 	//ast->acceptVisitor(v);
 }
 UNITTEST(function2) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("def int foo(var argc : int, const argv : int[]) {}");
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseFunctionDecl();
+	auto ast = lp.parser.parseFunctionDecl();
 	std::ofstream z("test2.dot");
 	DotVisitor d(z);
 	//ast->acceptVisitor(d);
@@ -133,11 +107,9 @@ UNITTEST(function2) {
 }
 
 UNITTEST(unary1) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("hello");
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseMulExpression();
+	auto ast = lp.parser.parseMulExpression();
 	StdOutVisitor v(std::cout);
 	std::ofstream z("test.dot");
 	DotVisitor d(z);
@@ -150,12 +122,10 @@ UNITTEST(unary1) {
 }
 
 UNITTEST(extern1) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("extern def int read(var a : int, var b : float);"
 		"extern def int write(var a : int, var b : float);");
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseDecl();
+	auto ast = lp.parser.parseDecl();
 	StdOutVisitor v(std::cout);
 	std::ofstream z("test.dot");
 	DotVisitor d(z);
@@ -168,68 +138,58 @@ UNITTEST(extern1) {
 }
 
 UNITTEST(ifelse1) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("def int main() {"
 		 " if(a ? b : c) {"
 		 " }"
 		 "}");
 		 
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseDecl();
+	auto ast = lp.parser.parseDecl();
 }
 
 UNITTEST(ifelse2) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("def int main() {"
 		 " if(a ? b : c) {"
 		 " } else {}"
 		 "}");
 		 
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseDecl();
+	auto ast = lp.parser.parseDecl();
 }
 
 UNITTEST(ifelse3) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("def int main() {"
 		 " if(a ? b : c) {"
 		 " } else if(true) {"
 		 " } else {}"
 		 "}");
 		 
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseDecl();
+	auto ast = lp.parser.parseDecl();
 }
 
 UNITTEST(do1) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("def int main() {"
 		 " do {"
 		 " } while(false);"
 		 "}");
 		 
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseDecl();
+	auto ast = lp.parser.parseDecl();
 }
 
 UNITTEST(for1) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("def int main() {"
 		 " for(;;) {"
 		 " }"
 		 "}");
 		 
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseDecl();
+	auto ast = lp.parser.parseDecl();
 }
 
 UNITTEST(for2) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("def int main() {"
 		 " for(;;) {"
 		 "  for(var f(128); f > 0; --f) {"
@@ -237,13 +197,11 @@ UNITTEST(for2) {
 		 " }"
 		 "}");
 		 
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseDecl();
+	auto ast = lp.parser.parseDecl();
 }
 
 UNITTEST(for3) {
-	auto ss = std::make_shared<std::stringstream>
+	LexParse lp
 		("def int main() {"
 		 " for(;;) outer {"
 		 "  for(var f(128); f > 0; --f) {"
@@ -251,7 +209,5 @@ UNITTEST(for3) {
 		 " }"
 		 "}");
 		 
-	Lexer l(ss);
-	Parser p(l);
-	auto ast = p.parseDecl();
+	auto ast = lp.parser.parseDecl();
 }
