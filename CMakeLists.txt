@@ -140,6 +140,8 @@ set(common_header
 	src/common/symboltablevisitor.hpp
 	src/common/lambdavisitor.hpp
 	src/common/token.hpp
+	src/common/unittesthelper.hpp
+	src/common/unittesthelper.cpp
 )
 
 # parser library

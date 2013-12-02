@@ -37,6 +37,10 @@ void Lexer::getLine() {
 	}
 }
 
+Loc Lexer::getLoc() const {
+	return Loc(this->line, this->column);
+}
+
 char Lexer::getNextChar() {
 	if(!st.empty()) {
 		char t = st.top();

@@ -28,6 +28,7 @@ class Lexer {
 	public:
 		Lexer(std::shared_ptr<std::istream> in);
 		Lexer(const std::string& filename);
+		Loc getLoc() const;
 
 		Token nextToken();
 		void print();
