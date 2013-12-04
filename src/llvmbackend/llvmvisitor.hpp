@@ -34,10 +34,16 @@ private:
 };
 
 class LLVMVisitor : public Visitor {
-	#include <visitorinclude>
+	//#include <visitorinclude>
 public:
 	LLVMVisitor();
 	std::stack<llvm::Value*> valueStack;
+	bool leaveAddExpression(AddExpression*) override;
+	bool leaveAndAndExpression(AndAndExpression*) override; 
+	bool leaveOrOrExpression(OrOrExpression*) override; 
+	bool visitPostfixExpression(PostfixExpression*) override;
+	bool visitPrimaryExpression(PrimaryExpression*) override;
+	bool visitPrimativeExpression(PrimativeExpression*) override;
 
 private:
 	llvm::Module *module;

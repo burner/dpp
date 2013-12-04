@@ -244,7 +244,7 @@ bool LLVMVisitor::leaveAddExpression(AddExpression* expr) {
 // empty
 //
 
-bool LLVMVisitor::visitOrOrExpression(OrOrExpression*) { return true; }
+/*bool LLVMVisitor::visitOrOrExpression(OrOrExpression*) { return true; }
 
 bool LLVMVisitor::visitOrOrExpression(const OrOrExpression*) { return true; }
 
@@ -540,4 +540,4 @@ bool LLVMVisitor::leaveDecl(Decl*) {
 bool LLVMVisitor::leaveDecl(const Decl*) {
 	ASSERT_T_MSG(false, "LLVMVisitor::leaveDecl(const Decl*) not implemented");
 	return true;
-}
+}*/
