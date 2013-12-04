@@ -34,7 +34,6 @@ private:
 };
 
 class LLVMVisitor : public Visitor {
-	//#include <visitorinclude>
 public:
 	LLVMVisitor();
 	std::stack<llvm::Value*> valueStack;
