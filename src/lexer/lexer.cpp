@@ -448,6 +448,18 @@ Token Lexer::nextToken() {
 						}
 					}
 				}
+			} else if(curInput == 'l') {
+				if(getNextChar() == 'a') {
+					if(getNextChar() == 's') {
+						if(getNextChar() == 's') {
+							if(isTokenStop(getNextChar())) {
+								readNext = false;
+								return Token(TokenType::Class, tokenLine, 
+									tokenColumn);
+							}
+						}
+					}
+				}
 			} else if(curInput == 'o') {
 				if(getNextChar() == 'n') {
 					if(getNextChar() == 's') {

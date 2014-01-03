@@ -89,6 +89,7 @@
 		{ Name : "True", "Regex" : "true", "ConvertFunction" : "void" }
 		{ Name : "False", "Regex" : "false", "ConvertFunction" : "void" }
 		{ Name : "Break", "Regex" : "break", "ConvertFunction" : "void" }
+		{ Name : "Class", "Regex" : "class", "ConvertFunction" : "void" }
 		{ Name : "Continue", "Regex" : "continue", 
 			"ConvertFunction" : "void" }
 	],
@@ -99,8 +100,15 @@
 		}
 		{ Name : "Decl", Expression : [
 			{ Rule : "FunctionDecl(func)", Id : "Function"}
+			{ Rule : "Class ; Identifier(className) ; Lcurly ; "\
+				"AggregationDecl(aggDecl) ; Rcurly", Id : "Class"}
 			{ Rule : "Extern ; FunctionPrototypeDecl(funcDecl) ; Semicolon", 
 				Id : "FunctionDecl"}
+			]
+		}
+		{ Name : "AggregationDecl", Expression : [
+			{ Rule : "Decl(decl)", Id : "Decl"}
+			{ Rule : "Decl(decl) ; AggregationDecl(follow)", Id : "DeclFollow"}
 			]
 		}
 		{ Name : "FunctionDecl", Expression : [

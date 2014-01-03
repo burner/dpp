@@ -211,3 +211,17 @@ UNITTEST(for3) {
 		 
 	auto ast = lp.parser.parseDecl();
 }
+
+UNITTEST(class1) {
+	LexParse lp
+		("class Foo {"
+		 " def int main() {"
+		 "  for(;;) outer {"
+		 "   for(var f(128); f > 0; --f) {"
+		 "   }"
+		 "  }"
+		 " }"
+		 "}");
+		 
+	auto ast = lp.parser.parseDecl();
+}

@@ -201,6 +201,7 @@ std::string tokenTypeToString(const TokenType tt) {
 	case TokenType::Cast: return "CAST";
 	case TokenType::Char: return "CHAR";
 	case TokenType::Char_Value: return "CHAR_VALUE";
+	case TokenType::Class: return "CLASS";
 	case TokenType::Colon: return "COLON";
 	case TokenType::Comma: return "COMMA";
 	case TokenType::Concat: return "CONCAT";

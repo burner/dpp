@@ -52,6 +52,7 @@ enum class TokenType {
 	Char,		//				"char"
 	Char_Value,	//				"'[ansi]'"
 	Colon, // done				":"
+	Class, // done				"class"
 	Const, // done				"const"
 	Comma, // done				","
 	Concat, // done				"~"
