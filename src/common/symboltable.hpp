@@ -11,6 +11,14 @@
 
 class SymbolTable;
 
+enum class SymbolTableEntryType {
+	Variable,
+	Constant,
+	Function,
+	Class,
+	Struct
+}
+
 struct SymbolTableEntry {
 	std::string id;
 	Loc loc;

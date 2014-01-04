@@ -176,7 +176,7 @@ set(llvm_header
 # we love c++11 and a chatty compiler that comments on our code
 set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -pedantic --std=c++0x")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O1")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 
 add_library(dppcommon SHARED ${GenCommonSource} ${GenCommonHeader}
 	${common_sources} 

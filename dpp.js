@@ -100,15 +100,24 @@
 		}
 		{ Name : "Decl", Expression : [
 			{ Rule : "FunctionDecl(func)", Id : "Function"}
-			{ Rule : "Class ; Identifier(className) ; Lcurly ; "\
-				"AggregationDecl(aggDecl) ; Rcurly", Id : "Class"}
+			{ Rule : "ClassDecl(classDecl)", Id : "Class"}
 			{ Rule : "Extern ; FunctionPrototypeDecl(funcDecl) ; Semicolon", 
 				Id : "FunctionDecl"}
 			]
 		}
+		{ Name : "ClassDecl", Expression : [
+			{ Rule : "Class ; Identifier(className) ; Lcurly ; "\
+				"AggregationDecl(aggDecl) ; Rcurly", Id : "Class"}
+			]
+		}
+		{ Name : "AggregationDeclList", Expression : [
+			{ Rule : "AggregationDecl(decl)", Id : "Decl"}
+			{ Rule : "AggregationDecl(decl) ; AggregationDeclList(follow)", Id : "DeclFollow"}
+			]
+		}
 		{ Name : "AggregationDecl", Expression : [
-			{ Rule : "Decl(decl)", Id : "Decl"}
-			{ Rule : "Decl(decl) ; AggregationDecl(follow)", Id : "DeclFollow"}
+			{ Rule : "FunctionDecl(functionDecl)", Id : "Func"}
+			{ Rule : "ClassDecl(classDecl)", Id : "Class"}
 			]
 		}
 		{ Name : "FunctionDecl", Expression : [
