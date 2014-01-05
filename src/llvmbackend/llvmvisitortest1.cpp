@@ -11,11 +11,11 @@
 #include <unit.hpp>
 
 UNITTEST(primative1) {
-	LOG();
+	//LOG();
 	LexParse lp("true && false || true");
 	auto ast = lp.parser.parseOrOrExpression();
 	StdOutVisitor ot(std::cout);
-	ast->acceptVisitor(ot);
+	//ast->acceptVisitor(ot);
 	SymbolTableVisitor stv;
 	//ast->acceptVisitor(stv);
 
@@ -24,11 +24,11 @@ UNITTEST(primative1) {
 }
 
 UNITTEST(add1) {
-	LOG();
+	//LOG();
 	LexParse lp("10 + 2");
 	auto ast = lp.parser.parseOrOrExpression();
 	StdOutVisitor ot(std::cout);
-	ast->acceptVisitor(ot);
+	//ast->acceptVisitor(ot);
 	SymbolTableVisitor stv;
 	//ast->acceptVisitor(stv);
 
@@ -37,11 +37,11 @@ UNITTEST(add1) {
 }
 
 UNITTEST(add2) {
-	LOG();
+	//LOG();
 	LexParse lp("10.0f + 2.2f");
 	auto ast = lp.parser.parseOrOrExpression();
 	StdOutVisitor ot(std::cout);
-	ast->acceptVisitor(ot);
+	//ast->acceptVisitor(ot);
 	SymbolTableVisitor stv;
 	//ast->acceptVisitor(stv);
 
@@ -50,11 +50,11 @@ UNITTEST(add2) {
 }
 
 UNITTEST(add3) {
-	LOG();
+	//LOG();
 	LexParse lp("10.0f + 2.2f");
 	auto ast = lp.parser.parseOrOrExpression();
 	StdOutVisitor ot(std::cout);
-	ast->acceptVisitor(ot);
+	//ast->acceptVisitor(ot);
 	SymbolTableVisitor stv;
 	//ast->acceptVisitor(stv);
 

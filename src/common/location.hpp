@@ -14,3 +14,5 @@ struct Loc {
 	
 	std::string toString() const;
 };
+
+std::ostream& operator<<(std::ostream&, const Loc&);

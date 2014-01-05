@@ -101,11 +101,19 @@ UNITTEST(functionDecl2) {
 	ast->acceptVisitor(stv);
 
 	auto map = stv.getRoot()->getMap();
-	AS_T(map.count(SymbolTableEntry("bar")));
-	AS_T(stv.getRoot()->contains("bar"));
+	AS_T(map.count(SymbolTableEntry(SymbolTableEntryType::Variable, "bar")));
+	AS_T(stv.getRoot()->contains(SymbolTableEntryType::Variable,"bar"));
 	AS_EQ(stv.getRoot()->getFollow().size(), 1u);
-	AS_T(stv.getRoot()->getFollow()[0]->contains("bar"));
-	AS_F(stv.getRoot()->getFollow()[0]->contains("foo"));
+	AS_T_C(stv.getRoot()->getFollow()[0]->contains(SymbolTableEntryType::Function,"bar"),
+		[&]() {
+			stv.getRoot()->toOstream(std::cout, 0);
+		}
+	);
+	AS_T_C(stv.getRoot()->getFollow()[0]->contains(SymbolTableEntryType::Variable,"foo"),
+		[&]() {
+			stv.getRoot()->toOstream(std::cout, 0);
+		}
+	);
 
 	bool worked(true);
 	LambdaVisitor lv([&worked](const AstNode* n) {
@@ -126,11 +134,15 @@ UNITTEST(functionDecl3) {
 	ast->acceptVisitor(stv);
 
 	auto map = stv.getRoot()->getMap();
-	AS_T(map.count(SymbolTableEntry("bar")));
-	AS_T(stv.getRoot()->contains("bar"));
+	AS_T(map.count(SymbolTableEntry(SymbolTableEntryType::Variable,"bar")));
+	AS_T(stv.getRoot()->contains(SymbolTableEntryType::Variable,"bar"));
 	AS_EQ(stv.getRoot()->getFollow().size(), 1u);
-	AS_T(stv.getRoot()->getFollow()[0]->contains("bar"));
-	AS_F(stv.getRoot()->getFollow()[0]->contains("foo"));
+	AS_T(stv.getRoot()->getFollow()[0]->contains(SymbolTableEntryType::Variable,"bar"));
+	AS_T_C(stv.getRoot()->getFollow()[0]->contains(SymbolTableEntryType::Variable,"foo"),
+		[&]() {
+			stv.getRoot()->toOstream(std::cout, 0);
+		}
+	);
 
 	bool worked(true);
 	LambdaVisitor lv([&worked](const AstNode* n) {
@@ -160,6 +172,7 @@ UNITTEST(functionDecl4) {
 	});
 	ast->acceptVisitor(lv);
 	AS_T(worked);
+	stv.getRoot()->toOstream(std::cout, 0u);
 }
 
 UNITTEST(functionDecl5) {

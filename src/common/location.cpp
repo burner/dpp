@@ -13,9 +13,16 @@ Loc::Loc(std::string f, unsigned l, unsigned c) : file(f), line(l),
 }
 
 std::string Loc::toString() const {
-	if(file.size() == 0u) {	
-		return format("%u:%u",line,column);
+	std::stringstream ss;
+	ss<<(*this);
+	return ss.str();
+}
+
+std::ostream& operator<<(std::ostream& os, const Loc& l) {
+	if(l.file.size() == 0u) {	
+		format(os, "%u:%u",l.line,l.column);
 	} else {
-		return format("%s:%u:%u",file,line,column);
+		format(os, "%s:%u:%u",l.file,l.line,l.column);
 	}
+	return os;
 }

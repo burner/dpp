@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ostream>
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -17,21 +18,29 @@ enum class SymbolTableEntryType {
 	Function,
 	Class,
 	Struct
-}
+};
+
+std::ostream& operator<<(std::ostream&, const SymbolTableEntryType);
 
 struct SymbolTableEntry {
+	SymbolTableEntryType type;
 	std::string id;
 	Loc loc;
 	AstNode* astEntry;
 
-	explicit SymbolTableEntry(const std::string&);
-	explicit SymbolTableEntry(const std::string&,const Loc&);
-	explicit SymbolTableEntry(const std::string&,AstNode*);
-	explicit SymbolTableEntry(const std::string&,const Loc&,AstNode*);
+	explicit SymbolTableEntry(const SymbolTableEntryType, const std::string&);
+	explicit SymbolTableEntry(const SymbolTableEntryType, const std::string&,
+		const Loc&);
+	explicit SymbolTableEntry(const SymbolTableEntryType, const std::string&,
+		AstNode*);
+	explicit SymbolTableEntry(const SymbolTableEntryType, const std::string&,
+		const Loc&,AstNode*);
 
 	bool operator<(const SymbolTableEntry) const;
 	bool operator==(const SymbolTableEntry) const;
 };
+
+std::ostream& operator<<(std::ostream&, const SymbolTableEntry&);
 
 namespace std {
 	template<>
@@ -53,12 +62,14 @@ enum class SymbolTableType {
 	Unordered
 };
 
+std::ostream& operator<<(std::ostream&, const SymbolTableType);
+
 class SymbolTable {
 public:
 	SymbolTable();
 	SymbolTable(SymbolTable*,SymbolTableType = SymbolTableType::Ordered);
 
-	void insert(const std::string&, const Loc&);
+	void insert(const SymbolTableEntryType,const std::string&, const Loc&);
 
 	SymbolTable* getParent();
 	const SymbolTable* getParent() const;
@@ -70,8 +81,10 @@ public:
 	const SymbolTableVec getFollow() const;
 	SymbolTableVec getFollow();
 
-	bool contains(const std::string&) const;
+	bool contains(const SymbolTableEntryType, const std::string&) const;
 	SymbolTableType getType() const;
+
+	void toOstream(std::ostream&, const size_t) const;
 
 private:
 	SymbolTableEntryMap map;
