@@ -24,17 +24,13 @@ std::ostream& operator<<(std::ostream&, const SymbolTableEntryType);
 
 struct SymbolTableEntry {
 	SymbolTableEntryType type;
-	std::string id;
 	Loc loc;
 	AstNode* astEntry;
 
-	explicit SymbolTableEntry(const SymbolTableEntryType, const std::string&);
-	explicit SymbolTableEntry(const SymbolTableEntryType, const std::string&,
-		const Loc&);
-	explicit SymbolTableEntry(const SymbolTableEntryType, const std::string&,
-		AstNode*);
-	explicit SymbolTableEntry(const SymbolTableEntryType, const std::string&,
-		const Loc&,AstNode*);
+	explicit SymbolTableEntry(const SymbolTableEntryType);
+	explicit SymbolTableEntry(const SymbolTableEntryType, const Loc&);
+	explicit SymbolTableEntry(const SymbolTableEntryType, AstNode*);
+	explicit SymbolTableEntry(const SymbolTableEntryType, const Loc&,AstNode*);
 
 	bool operator<(const SymbolTableEntry) const;
 	bool operator==(const SymbolTableEntry) const;
@@ -55,7 +51,8 @@ namespace std {
 typedef std::shared_ptr<SymbolTable> SymbolTablePtr;
 typedef std::shared_ptr<const SymbolTable> SymbolTableConstPtr;
 typedef std::vector<SymbolTablePtr> SymbolTableVec;
-typedef std::unordered_set<SymbolTableEntry> SymbolTableEntryMap;
+typedef std::vector<SymbolTableEntry> SymbolTableEntryVec;
+typedef std::unordered_map<std::string,SymbolTableEntryVec> SymbolTableEntryMap;
 
 enum class SymbolTableType {
 	Ordered,
