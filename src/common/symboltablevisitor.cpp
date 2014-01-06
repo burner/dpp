@@ -47,8 +47,8 @@ bool SymbolTableVisitor::leaveBlockStatement(BlockStatement*) {
 
 bool SymbolTableVisitor::visitFunctionDecl(FunctionDecl* fd) { 
 	this->stack.top()->insert(
-		SymbolTableEntryType::Function,
 		fd->getDecl()->getIdentifier().value.stringValue,
+		SymbolTableEntryType::Function,
 		fd->getDecl()->getIdentifier().getLocation()
 	);
 	this->blockStmt = true;
@@ -82,16 +82,16 @@ bool SymbolTableVisitor::visitConditionalExpression(ConditionalExpression* node)
 
 bool SymbolTableVisitor::visitConstDeclPrefix(ConstDeclPrefix* node) {
 	this->giveAstNodeCurrentSymbolTable(node);
-	this->stack.top()->insert(SymbolTableEntryType::Constant, node->getIdentifier().value.stringValue,
-		node->getIdentifier().getLocation()
+	this->stack.top()->insert(node->getIdentifier().value.stringValue,
+		SymbolTableEntryType::Constant, node->getIdentifier().getLocation()
 	);
 	return true;
 }
 
 bool SymbolTableVisitor::visitVarDeclPrefix(VarDeclPrefix* node) {
 	this->giveAstNodeCurrentSymbolTable(node);
-	this->stack.top()->insert(SymbolTableEntryType::Variable, node->getIdentifier().value.stringValue,
-		node->getIdentifier().getLocation()
+	this->stack.top()->insert(node->getIdentifier().value.stringValue,
+		SymbolTableEntryType::Variable, node->getIdentifier().getLocation()
 	);
 	return true;
 }

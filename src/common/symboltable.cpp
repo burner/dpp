@@ -12,37 +12,37 @@ std::ostream& operator<<(std::ostream& os, const SymbolTableEntryType e) {
 	return os;
 }
 
-SymbolTableEntry::SymbolTableEntry(const SymbolTableEntryType t ,
-		const std::string& i) : type(t), id(i), astEntry(nullptr)
+SymbolTableEntry::SymbolTableEntry(const SymbolTableEntryType t) : type(t), 
+		astEntry(nullptr)
 {
 }
 
 SymbolTableEntry::SymbolTableEntry(const SymbolTableEntryType t,
-		const std::string& i, const Loc& l) : type(t), id(i), loc(l), astEntry(nullptr)
+		const Loc& l) : type(t), loc(l), astEntry(nullptr)
 {
 }
 
 SymbolTableEntry::SymbolTableEntry(const SymbolTableEntryType t,
-		const std::string& i, const Loc& l, AstNode* n) : type(t), id(i), loc(l), 
+		const Loc& l, AstNode* n) : type(t), loc(l), 
 		astEntry(n)
 {
 }
 
 SymbolTableEntry::SymbolTableEntry(const SymbolTableEntryType t,
-		const std::string& i, AstNode* n) : type(t), id(i), astEntry(n)
+		AstNode* n) : type(t), astEntry(n)
 {
 }
 
 bool SymbolTableEntry::operator<(const SymbolTableEntry o) const {
-	return this->id < o.id;
+	return this->type < o.type;
 }
 
 bool SymbolTableEntry::operator==(const SymbolTableEntry o) const {
-	return this->id == o.id;
+	return this->type == o.type;
 }
 
 std::ostream& operator<<(std::ostream& os, const SymbolTableEntry& e) {
-	format(os, "%s:%s:%s", e.id, e.type, e.loc);
+	format(os, "%s:%s: ptr %p", e.type, e.loc, e.astEntry);
 	return os;
 }
 
@@ -62,8 +62,16 @@ SymbolTable::SymbolTable(SymbolTable* p, SymbolTableType t) : parent(p),
 {
 }
 
-void SymbolTable::insert(const SymbolTableEntryType t, const std::string& id , const Loc& l) {
-	this->map.emplace(t,id,l);
+void SymbolTable::insert(const std::string& id, const SymbolTableEntryType t, const Loc& l) {
+	auto it(this->map.find(id));
+	if(it == this->map.end()) {
+		it = this->map.insert(std::make_pair(id, SymbolTableEntryVec())).first;
+	}
+
+	it->second.emplace_back(t, l);
+
+	// get the last insert so getLast works
+	this->lastEntry = &it->second.back();
 }
 
 void SymbolTable::insertNewTable(SymbolTablePtr st) {
@@ -94,13 +102,20 @@ SymbolTableVec SymbolTable::getFollow() {
 	return this->follow;
 }
 
-bool SymbolTable::contains(const SymbolTableEntryType t, const std::string& key) const {
-	bool ret = static_cast<bool>(this->map.count(SymbolTableEntry(t, key)));
-	if(ret) {
-		return true;
-	} else if(!ret && this->parent) {
-		return this->parent->contains(t, key);
+bool SymbolTable::contains(const std::string& key, const SymbolTableEntryType t) const {
+	auto it(this->map.find(key));
+	if(it == this->map.cend()) {
+		if(this->parent) {
+			return this->parent->contains(key, t);
+		} else {
+			return false;
+		}
 	} else {
+		for(auto& jt : it->second) {
+			if(jt.type == t) {
+				return true;
+			}
+		}
 		return false;
 	}
 }
@@ -111,17 +126,30 @@ void SymbolTable::toOstream(std::ostream& os, const size_t indent) const {
 	}
 	format(os, "%s\n", this->type);
 
-	std::vector<SymbolTableEntry> entries(this->map.begin(), this->map.end());
-	std::sort(entries.begin(), entries.end());
-
-	for(auto& it : entries) {
+	for(auto& it : this->map) {
 		for(size_t i = 0; i < indent; ++i) {
 			os<<' ';
 		}
-		format(os, "%s\n", it);
+		format(os, "%s ", it.first);
+		for(auto& jt : it.second) {
+			format(os, "%s ", jt);
+		}
+		format(os, "\n");
 	}
+
+	//std::vector<SymbolTableEntry> entries(this->map.begin(), this->map.end());
+	//std::sort(entries.begin(), entries.end());
+
+	//for(auto& it : entries) {
+	//	for(size_t i = 0; i < indent; ++i) {
+	//		os<<' ';
+	//	}
+	//	format(os, "%s\n", it);
+	//}
 
 	for(auto& it : this->follow) {
 		it->toOstream(os, indent+1);
 	}
 }
+
+SymbolTableEntry& getLast();

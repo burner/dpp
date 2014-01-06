@@ -38,11 +38,21 @@ struct SymbolTableEntry {
 
 std::ostream& operator<<(std::ostream&, const SymbolTableEntry&);
 
+template <class T>
+inline void hashCombine(std::size_t& seed, const T& v) {
+    std::hash<T> hasher;
+    seed ^= hasher(v) + 0x9e3779b9 + (seed<<6) + (seed>>2);
+}
+
 namespace std {
 	template<>
 	struct hash<SymbolTableEntry> {
 		size_t operator()(const SymbolTableEntry& s) const {
-			return std::hash<string>()(s.id);
+			size_t hash(std::hash<size_t>()(static_cast<size_t>(s.type)));
+			hashCombine(hash, s.loc.file);
+			hashCombine(hash, s.loc.line);
+			hashCombine(hash, s.loc.column);
+			return hash;
 		}
 	};
 }
@@ -66,7 +76,7 @@ public:
 	SymbolTable();
 	SymbolTable(SymbolTable*,SymbolTableType = SymbolTableType::Ordered);
 
-	void insert(const SymbolTableEntryType,const std::string&, const Loc&);
+	void insert(const std::string&, const SymbolTableEntryType, const Loc&);
 
 	SymbolTable* getParent();
 	const SymbolTable* getParent() const;
@@ -78,14 +88,17 @@ public:
 	const SymbolTableVec getFollow() const;
 	SymbolTableVec getFollow();
 
-	bool contains(const SymbolTableEntryType, const std::string&) const;
+	bool contains(const std::string&, const SymbolTableEntryType) const;
 	SymbolTableType getType() const;
 
-	void toOstream(std::ostream&, const size_t) const;
+	void toOstream(std::ostream&, const size_t = 0) const;
+
+	SymbolTableEntry& getLast();
 
 private:
 	SymbolTableEntryMap map;
 	SymbolTableVec follow;
 	SymbolTable* parent;
 	SymbolTableType type;
+	SymbolTableEntry* lastEntry;
 };

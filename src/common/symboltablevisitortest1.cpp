@@ -101,15 +101,19 @@ UNITTEST(functionDecl2) {
 	ast->acceptVisitor(stv);
 
 	auto map = stv.getRoot()->getMap();
-	AS_T(map.count(SymbolTableEntry(SymbolTableEntryType::Variable, "bar")));
-	AS_T(stv.getRoot()->contains(SymbolTableEntryType::Variable,"bar"));
-	AS_EQ(stv.getRoot()->getFollow().size(), 1u);
-	AS_T_C(stv.getRoot()->getFollow()[0]->contains(SymbolTableEntryType::Function,"bar"),
+	AS_T(map.count("bar"));
+	AS_F_C(stv.getRoot()->contains("bar", SymbolTableEntryType::Variable),
 		[&]() {
 			stv.getRoot()->toOstream(std::cout, 0);
 		}
 	);
-	AS_T_C(stv.getRoot()->getFollow()[0]->contains(SymbolTableEntryType::Variable,"foo"),
+	AS_EQ(stv.getRoot()->getFollow().size(), 1u);
+	AS_T_C(stv.getRoot()->getFollow()[0]->contains("bar", SymbolTableEntryType::Function),
+		[&]() {
+			stv.getRoot()->toOstream(std::cout, 0);
+		}
+	);
+	AS_T_C(stv.getRoot()->getFollow()[0]->contains("foo", SymbolTableEntryType::Variable),
 		[&]() {
 			stv.getRoot()->toOstream(std::cout, 0);
 		}
@@ -134,11 +138,16 @@ UNITTEST(functionDecl3) {
 	ast->acceptVisitor(stv);
 
 	auto map = stv.getRoot()->getMap();
-	AS_T(map.count(SymbolTableEntry(SymbolTableEntryType::Variable,"bar")));
-	AS_T(stv.getRoot()->contains(SymbolTableEntryType::Variable,"bar"));
+	AS_T(map.count("bar"));
+	AS_F_C(stv.getRoot()->contains("bar", SymbolTableEntryType::Variable),
+		[&]() {
+			stv.getRoot()->toOstream(std::cout, 0);
+		}
+	);
 	AS_EQ(stv.getRoot()->getFollow().size(), 1u);
-	AS_T(stv.getRoot()->getFollow()[0]->contains(SymbolTableEntryType::Variable,"bar"));
-	AS_T_C(stv.getRoot()->getFollow()[0]->contains(SymbolTableEntryType::Variable,"foo"),
+	AS_T(stv.getRoot()->getFollow()[0]->contains("bar", SymbolTableEntryType::Function));
+	AS_F(stv.getRoot()->getFollow()[0]->contains("bar", SymbolTableEntryType::Variable));
+	AS_T_C(stv.getRoot()->getFollow()[0]->contains("foo", SymbolTableEntryType::Variable),
 		[&]() {
 			stv.getRoot()->toOstream(std::cout, 0);
 		}
@@ -202,6 +211,8 @@ UNITTEST(functionDecl5) {
 	});
 	ast->acceptVisitor(lv);
 	AS_T(worked);
+	std::cout<<std::endl;
+	stv.getRoot()->toOstream(std::cout);
 }
 
 UNITTEST(functionDecl6) {
