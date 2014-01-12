@@ -32,8 +32,8 @@ UNITTEST(add1) {
 	SymbolTableVisitor stv;
 	//ast->acceptVisitor(stv);
 
-	LLVMVisitor llvmV;
-	ast->acceptVisitor(llvmV);
+	//LLVMVisitor llvmV;
+	//ast->acceptVisitor(llvmV);
 }
 
 UNITTEST(add2) {

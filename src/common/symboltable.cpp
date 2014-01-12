@@ -1,5 +1,15 @@
 #include <symboltable.hpp>
 #include <format.hpp>
+#include <parser.hpp>
+
+std::ostream& operator<<(std::ostream& os, const SymbolTypeEnum e) {
+	switch(e) {
+		case SymbolTypeEnum::Undefined: os<<"Undefined"; break;
+		case SymbolTypeEnum::Primative: os<<"Primative"; break;
+		case SymbolTypeEnum::IdList: os<<"IdList"; break;
+	}
+	return os;
+}
 
 std::ostream& operator<<(std::ostream& os, const SymbolTableEntryType e) {
 	switch(e) {
@@ -9,6 +19,21 @@ std::ostream& operator<<(std::ostream& os, const SymbolTableEntryType e) {
 		case SymbolTableEntryType::Class: os<<"Class"; break;
 		case SymbolTableEntryType::Struct: os<<"Struct"; break;
 	};
+	return os;
+}
+
+SymbolType::SymbolType() : type(SymbolTypeEnum::Undefined), tablePtr(nullptr) {
+}
+
+std::ostream& operator<<(std::ostream& os, const SymbolType e) {
+	os<<e.type<<" ";
+
+	if(e.type == SymbolTypeEnum::Primative) {
+		os<<e.primativeType;
+	} else if(e.type == SymbolTypeEnum::IdList) {
+		os<<e.name;
+	}
+	
 	return os;
 }
 
@@ -62,7 +87,8 @@ SymbolTable::SymbolTable(SymbolTable* p, SymbolTableType t) : parent(p),
 {
 }
 
-void SymbolTable::insert(const std::string& id, const SymbolTableEntryType t, const Loc& l) {
+void SymbolTable::insert(const std::string& id, const SymbolTableEntryType t, 
+		const Loc& l) {
 	auto it(this->map.find(id));
 	if(it == this->map.end()) {
 		it = this->map.insert(std::make_pair(id, SymbolTableEntryVec())).first;
@@ -102,7 +128,8 @@ SymbolTableVec SymbolTable::getFollow() {
 	return this->follow;
 }
 
-bool SymbolTable::contains(const std::string& key, const SymbolTableEntryType t) const {
+bool SymbolTable::contains(const std::string& key, 
+		const SymbolTableEntryType t) const {
 	auto it(this->map.find(key));
 	if(it == this->map.cend()) {
 		if(this->parent) {
@@ -152,4 +179,4 @@ void SymbolTable::toOstream(std::ostream& os, const size_t indent) const {
 	}
 }
 
-SymbolTableEntry& getLast();
+//SymbolTableEntry& SymbolTable::getLast();

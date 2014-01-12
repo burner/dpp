@@ -22,6 +22,31 @@ enum class SymbolTableEntryType {
 
 std::ostream& operator<<(std::ostream&, const SymbolTableEntryType);
 
+enum class SymbolTypeEnum {
+	Undefined,
+	Primative,
+	IdList
+};
+
+std::ostream& operator<<(std::ostream&, const SymbolTypeEnum);
+
+
+struct SymbolType {
+	SymbolType();
+
+	SymbolTypeEnum type;
+
+	union {
+		TokenType primativeType;
+		union {
+			SymbolTable* tablePtr;
+			std::string name;
+		};
+	};
+};
+
+std::ostream& operator<<(std::ostream&, const SymbolType);
+
 struct SymbolTableEntry {
 	SymbolTableEntryType type;
 	Loc loc;
@@ -38,7 +63,7 @@ struct SymbolTableEntry {
 
 std::ostream& operator<<(std::ostream&, const SymbolTableEntry&);
 
-template <class T>
+template<typename T>
 inline void hashCombine(std::size_t& seed, const T& v) {
     std::hash<T> hasher;
     seed ^= hasher(v) + 0x9e3779b9 + (seed<<6) + (seed>>2);
@@ -93,7 +118,7 @@ public:
 
 	void toOstream(std::ostream&, const size_t = 0) const;
 
-	SymbolTableEntry& getLast();
+	//SymbolTableEntry& getLast();
 
 private:
 	SymbolTableEntryMap map;

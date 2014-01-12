@@ -183,6 +183,7 @@ std::string Token::toString() const {
 
 std::string tokenTypeToString(const TokenType tt) {
 	switch(tt) {
+	case TokenType::Invalid: return "INVALID";
 	case TokenType::Abstract: return "ABSTRACT";
 	case TokenType::Alias: return "ALIAS";
 	case TokenType::Align: return "ALIGN";
@@ -316,4 +317,9 @@ std::ostream& operator<<(std::ostream& o, const Token& t) {
 	}
 	o<<')';
 	return o;
+}
+
+std::ostream& operator<<(std::ostream& os, const TokenType t) {
+	os<<tokenTypeToString(t);
+	return os;
 }

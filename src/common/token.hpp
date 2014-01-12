@@ -33,6 +33,8 @@ struct Values {
 };
 
 enum class TokenType {
+	Invalid = 0, // this Type can not be parsed and you should never use such a
+			// token
 	Abstract, // done			"abstract"
 	Alias, // done				"alias"
 	Align, // done				"align"
@@ -189,4 +191,6 @@ class Token {
 };
 
 std::ostream& operator<<(std::ostream&, const Token&);
+
 std::string tokenTypeToString(const TokenType tt);
+std::ostream& operator<<(std::ostream&, const TokenType);
