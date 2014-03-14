@@ -11,6 +11,7 @@ endif()
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}")
 
 find_package(LLVM)
+find_package(NCURSES)
 
 #pkg_check_modules(LLVM llvm)
 #include_directories(${LLVM_INCLUDE_DIRS})
@@ -209,7 +210,7 @@ set_target_properties(dppllvm PROPERTIES
 	COMPILE_FLAGS ${LLVM_CFLAGS}
 )
 
-target_link_libraries(dppllvm ${LLVM_ALL_LIBS} pthread dl)
+target_link_libraries(dppllvm ${LLVM_ALL_LIBS} pthread dl ncurses)
 
 add_executable(dpp ${dpp_sources})
 target_link_libraries(dpp dppcommon dppvisitor dppparser dpplexer dppllvm)

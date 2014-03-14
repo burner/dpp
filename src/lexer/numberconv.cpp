@@ -19,8 +19,8 @@ class FormatException : public std::exception {
 
 template <typename Type>
 bool valueTest(const long long value) {
-	if(value < std::numeric_limits<Type>::min() || 
-			value > std::numeric_limits<Type>::max()) {
+	if(value <= std::numeric_limits<Type>::min() || 
+			value >= std::numeric_limits<Type>::max()) {
 		return false;
 	} else {
 		return true;
