@@ -653,6 +653,16 @@ Token Lexer::nextToken() {
 				}
 			}
 			goto identifier;
+		case 'l':
+			if(getNextChar() == 'e') {
+				if(getNextChar() == 't') {
+					if(isTokenStop(getNextChar())) {
+						readNext = false;
+						return Token(TokenType::Let, tokenLine, tokenColumn);
+					}
+				}
+			}
+			goto identifier;
 		case 'u':
 			if(getNextChar() == 's') { // ushort
 				if(getNextChar() == 'h') {

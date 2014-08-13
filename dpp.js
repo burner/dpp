@@ -10,6 +10,7 @@
 		{ Name : "Long", "Regex" : "long", "ConvertFunction" : "void" }
 		{ Name : "Ulong", "Regex" : "ulong", "ConvertFunction" : "void" }
 		{ Name : "Const", "Regex" : "const", "ConvertFunction" : "void" }
+		{ Name : "Let", "Regex" : "const", "ConvertFunction" : "void" }
 		{ Name : "Byte_Value", "Regex" : "[0-9]+b", 
 			"ConvertFunction" : "void" }
 		{ Name : "Short_Value", "Regex" : "[0-9]+s", 
@@ -134,6 +135,13 @@
 				"Lparen ; Rparen", Id : "WithoutArgList" }
 			]
 		}
+
+		#
+		#
+		# Statements
+		#
+		#
+
 		{ Name : "StatementList", Expression : [
 			{ Rule : "Statement(stmt)" , Id : "Stmt" }
 			{ Rule : "Statement(stmt) ; StatementList(follow)" , 
@@ -311,6 +319,13 @@
 			{ Rule : "AssignmentExpression(expr)" , Id : "Next" }
 			]
 		}
+
+		#
+		#
+		# Declaration
+		#
+		#
+
 		{ Name : "IdList", Expression : [
 			{ Rule : "Identifier(id)" , Id : "Ident" }
 			{ Rule : "Identifier(id) ; IdList(Follow)" , 
@@ -355,6 +370,7 @@
 		}
 		{ Name : "Modifier", Expression : [
 			{ Rule : "Const", Id : "Const" }
+			{ Rule : "Let", Id : "Let" }
 			]
 		}
 		{ Name : "TypeFollow", Expression : [
@@ -409,7 +425,7 @@
 		}
 		{ Name : "UnnamedArg", Expression : [
 			{ Rule : "Var ; Type(type) ", Id : "VarType"}
-			{ Rule : "Const ; Type(type) ", Id : "ConstType"}
+			{ Rule : "Modifier ; Type(type) ", Id : "ModifierType"}
 			]
 		}
 		{ Name : "VarDecl", Expression : [
@@ -428,7 +444,7 @@
 			]
 		}
 		{ Name : "ConstDeclPrefix", Expression : [
-			{ Rule : "Const ; Identifier(identifier) " , Id : "ConstName" }
+			{ Rule : "Modifier(modifier) ; Identifier(identifier) " , Id : "LetConst" }
 			]
 		}
 		{ Name : "VarDeclDirectInit", Expression : [
@@ -449,6 +465,13 @@
 				"Lparen ; InitLists(direct) ; Rparen", Id : "DeferedInit"}
 			]
 		}
+
+		#
+		#
+		# Expression
+		#
+		#
+
 		{ Name : "AssignmentExpression", Expression : [
 			{ Rule : "ConditionalExpression(drain)" , Id : "Cond" }
 			{ Rule : "ConditionalExpression(drain) ; Assign ; "\

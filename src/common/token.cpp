@@ -246,6 +246,7 @@ std::string tokenTypeToString(const TokenType tt) {
 	case TokenType::Leftshiftassign: return "LEFTSHIFTASSIGN";
 	case TokenType::Less: return "LESS";
 	case TokenType::Lessequal: return "LESSEQUAL";
+	case TokenType::Let: return "LET";
 	case TokenType::Logicaland: return "LOGICALAND";
 	case TokenType::Logicalor: return "LOGICALOR";
 	case TokenType::Logicalxor: return "LOGICALXOR";

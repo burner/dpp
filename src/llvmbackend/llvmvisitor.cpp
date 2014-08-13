@@ -200,7 +200,7 @@ bool LLVMVisitor::leaveAddExpression(AddExpression* expr) {
 		LLVMDump(lhs);
 		LLVMDump(rhs);
 
-		ASSERT_EQ(valueStack.size(), 0);
+		ASSERT_EQ(valueStack.size(), 0u);
 		if(rhsType->isIntegerTy() && rhsType->isIntegerTy()) {
 			if(rhsType->getIntegerBitWidth() == lhsType->getIntegerBitWidth()) {
 				this->valueStack.push(
@@ -233,7 +233,7 @@ bool LLVMVisitor::leaveAddExpression(AddExpression* expr) {
 				rhsType->getTypeID()), Loc());
 		}
 		
-		ASSERT_EQ(valueStack.size(), 1);
+		ASSERT_EQ(valueStack.size(), 1u);
 
 		LLVMDump(this->valueStack.top());
 	}

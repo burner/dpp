@@ -95,6 +95,7 @@ enum class TokenType {
 	Leftshiftassign, // done 	"<<="
 	Less, // done				"<"
 	Lessequal, // done			"<="
+	Let, // done				"let"
 	Logicaland,	//				"&&"
 	Logicalor, // done			"||"
 	Logicalxor, // done 		"^^"
