@@ -22,7 +22,7 @@ std::ostream& operator<<(std::ostream& os, const SymbolTableEntryType e) {
 	return os;
 }
 
-SymbolType::SymbolType() : type(SymbolTypeEnum::Undefined), tablePtr(nullptr) {
+SymbolType::SymbolType() : type(SymbolTypeEnum::Undefined) {
 }
 
 std::ostream& operator<<(std::ostream& os, const SymbolType e) {
@@ -31,7 +31,7 @@ std::ostream& operator<<(std::ostream& os, const SymbolType e) {
 	if(e.type == SymbolTypeEnum::Primative) {
 		os<<e.primativeType;
 	} else if(e.type == SymbolTypeEnum::IdList) {
-		os<<e.name;
+		os<<e.follow.name;
 	}
 	
 	return os;

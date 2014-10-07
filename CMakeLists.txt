@@ -11,7 +11,7 @@ endif()
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}")
 
 find_package(LLVM)
-find_package(NCURSES)
+#find_package(NCURSES)
 
 #pkg_check_modules(LLVM llvm)
 #include_directories(${LLVM_INCLUDE_DIRS})
@@ -39,6 +39,9 @@ if(NOT ${INCLUDE_TESTS} MATCHES "true")
 else()
 	add_definitions(-DSWEET_UNITTEST)
 endif()
+
+add_definitions(-D__STDC_CONSTANT_MACROS)
+add_definitions(-D__STDC_LIMIT_MACROS)
 
 include_directories("../sweet.hpp")
 include_directories("src/cmd")
@@ -175,7 +178,7 @@ set(llvm_header
 )
 
 # we love c++11 and a chatty compiler that comments on our code
-set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -pedantic --std=c++0x")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra -Werror -Wpedantic --std=c++1y")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0")
 

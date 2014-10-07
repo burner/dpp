@@ -30,6 +30,10 @@ enum class SymbolTypeEnum {
 
 std::ostream& operator<<(std::ostream&, const SymbolTypeEnum);
 
+struct SymbolTypeValue {
+	SymbolTable* tablePtr;
+	std::string name;
+};
 
 struct SymbolType {
 	SymbolType();
@@ -38,10 +42,7 @@ struct SymbolType {
 
 	union {
 		TokenType primativeType;
-		union {
-			SymbolTable* tablePtr;
-			std::string name;
-		};
+		SymbolTypeValue follow;
 	};
 };
 

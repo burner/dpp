@@ -4,6 +4,8 @@
 #include <limits.h>
 #include <unit.hpp>
 #include <format.hpp>
+#include <int128.hpp>
+#include <conv.hpp>
 
 class FormatException : public std::exception {
 	private:
@@ -60,7 +62,7 @@ Ret stringToIntegerImpl(const std::string& str, int base) {
 	bool neg = false;
 	long tmp = 0;
 	long mul = 1;
-	long long ret = 0;
+	int128 ret(0);
 	auto it = str.rbegin();
 
 	for(; it != str.rend(); it++) {
@@ -75,20 +77,12 @@ Ret stringToIntegerImpl(const std::string& str, int base) {
 			continue;
 		}
 
-		//std::cout<<__LINE__<<" "<<*it<<std::endl;
 		tmp = charToBase10(*it) * mul;
 		ret += tmp;
-		//std::cout<<__LINE__<<" "<<ret<<std::endl;
 		mul *= base;
 	}
 
-	if(!valueTest<Ret>(ret)) {
-		throw FormatException(
-			format("%s:%d cannot convert %d to char",__FILE__,__LINE__,ret)
-		);
-	} else {
-		return static_cast<Ret>(neg ? - ret : ret);
-	}
+	return to<Ret>(neg ? -ret : ret);
 }
 
 char stringToChar(const std::string& str, int base) {
