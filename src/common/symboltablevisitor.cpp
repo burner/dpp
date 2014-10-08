@@ -69,11 +69,6 @@ bool SymbolTableVisitor::visitAssignmentExpression(AssignmentExpression* node) {
 	return true;
 }
 
-bool SymbolTableVisitor::visitVarDeclDirectInit(VarDeclDirectInit* node) {
-	this->giveAstNodeCurrentSymbolTable(node);
-	return true;
-}
-
 bool SymbolTableVisitor::visitConditionalExpression(ConditionalExpression* node)
 {
 	this->giveAstNodeCurrentSymbolTable(node);
@@ -131,7 +126,7 @@ bool SymbolTableVisitor::visitAndAndExpression(AndAndExpression* node) {
 	return true;
 }
 
-bool SymbolTableVisitor::visitVarDeclDeferedInit(VarDeclDeferedInit* node) {
+bool SymbolTableVisitor::visitVarDeclDirectInit(VarDeclDirectInit* node) {
 	this->giveAstNodeCurrentSymbolTable(node);
 	return true;
 }

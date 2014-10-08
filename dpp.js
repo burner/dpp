@@ -113,7 +113,8 @@
 		}
 		{ Name : "AggregationDeclList", Expression : [
 			{ Rule : "AggregationDecl(decl)", Id : "Decl"}
-			{ Rule : "AggregationDecl(decl) ; AggregationDeclList(follow)", Id : "DeclFollow"}
+			{ Rule : "AggregationDecl(decl) ; AggregationDeclList(follow)", 
+				Id : "DeclFollow"}
 			]
 		}
 		{ Name : "AggregationDecl", Expression : [
@@ -411,10 +412,8 @@
 			]
 		}
 		{ Name : "Argument", Expression : [
-			{ Rule : "VarDeclPrefix(varName) ; VarDeclDeferedInit(type)", 
-				Id : "VarNameType"}
-			{ Rule : "ConstDeclPrefix(constName) ; VarDeclDeferedInit(type)", 
-				Id : "ConstNameType"}
+			{ Rule : "VarDeclPrefix(var)", Id : "VarType"}
+			{ Rule : "ConstDeclPrefix(constName)", Id : "ConstType"}
 			]
 		}
 		{ Name : "UnnamedArgList", Expression : [
@@ -430,39 +429,35 @@
 		}
 		{ Name : "VarDecl", Expression : [
 			{ Rule : "VarDeclPrefix(varPrefix) ; VarDeclDirectInit(direct)", 
-				Id : "VarDeclDirect"}
-			{ Rule : "VarDeclPrefix(varPrefix) ; VarDeclDeferedInit(defered)",
-				Id : "VarDeclDefered"}
+				Id : "VarDecl"}
 			{ Rule : "ConstDeclPrefix(constPrefix) ; "\
 				"VarDeclDirectInit(direct)", Id : "ConstDeclDirect"}
-			{ Rule : "ConstDeclPrefix(constPrefix) ; "\
-				"VarDeclDeferedInit(defered)", Id : "ConstDeclDefered"}
 			]
 		}
 		{ Name : "VarDeclPrefix", Expression : [
 			{ Rule : "Var ; Identifier(identifier) " , Id : "VarName" }
+			{ Rule : "Var" , Id : "Var" }
+			{ Rule : "Var ; Lparen ; TypeDelFun(type) ; Rparen ; "\
+				"Identifier(identifier) ", Id : "VarNameType" }
+			{ Rule : "Var ; Lparen ; TypeDelFun(type) ; Rparen", Id : "VarType" }
 			]
 		}
 		{ Name : "ConstDeclPrefix", Expression : [
 			{ Rule : "Modifier(modifier) ; Identifier(identifier) " , Id : "LetConst" }
+			{ Rule : "Modifier(modifier) ; Lparen ; TypeDelFun(type) ; "\
+				"Rparen ; Identifier(identifier) " , Id : "LetConst" }
 			]
 		}
+
+		# VarDeclDirectInit
 		{ Name : "VarDeclDirectInit", Expression : [
-			{ Rule : "Lparen ; InitLists(init) ; Rparen" , 
-				Id : "Direct" }
+			{ Rule : "Lparen ; InitLists(init) ; Rparen" , Id : "Direct" }
 			]
 		}
 		{ Name : "InitLists", Expression : [
 			{ Rule : "ConditionalExpression(expr)", Id : "Single" }
 			{ Rule : "ConditionalExpression(expr) ; Comma ; "\
 				"InitLists(follow)", Id : "Multiple" }
-			]
-		}
-		# VarDeclDeferedInit
-		{ Name : "VarDeclDeferedInit", Expression : [
-			{ Rule : "Colon ; TypeDelFun(type)" , Id : "Defered" }
-			{ Rule : "Colon ; TypeDelFun(type) ; "\
-				"Lparen ; InitLists(direct) ; Rparen", Id : "DeferedInit"}
 			]
 		}
 

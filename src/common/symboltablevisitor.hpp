@@ -33,7 +33,6 @@ public:
 	virtual bool visitTypeFollow(TypeFollow*);
 	virtual bool visitType(Type*);
 	virtual bool visitAndAndExpression(AndAndExpression*);
-	virtual bool visitVarDeclDeferedInit(VarDeclDeferedInit*);
 	virtual bool visitStatement(Statement*);
 	virtual bool visitBasicType(BasicType*);
 	virtual bool visitExpressionStatement(ExpressionStatement*);
