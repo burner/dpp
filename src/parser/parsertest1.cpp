@@ -31,7 +31,7 @@ UNITTEST(post1) {
 
 UNITTEST(varDecl1) {
 	LexParse lp
-		("var foo(10) ");
+		("var foo(10)");
 	auto ast = lp.parser.parseVarDecl();
 	StdOutVisitor v(std::cout);
 	//ast->acceptVisitor(v);
@@ -39,15 +39,15 @@ UNITTEST(varDecl1) {
 
 UNITTEST(varDecl2) {
 	LexParse lp
-		("var bar : int");
-	auto ast = lp.parser.parseVarDecl();
+		("var(int) bar;");
+	auto ast = lp.parser.parseStatement();
 	StdOutVisitor v(std::cout);
 	//ast->acceptVisitor(v);
 }
 
 UNITTEST(argList1) {
 	LexParse lp
-		("var bar : int, var foo : float");
+		("var(int) bar, var(float) foo");
 	auto ast = lp.parser.parseArgumentList();
 	StdOutVisitor v(std::cout);
 	//ast->acceptVisitor(v);
@@ -97,7 +97,7 @@ UNITTEST(function1) {
 }
 UNITTEST(function2) {
 	LexParse lp
-		("def int foo(var argc : int, const argv : int[]) {}");
+		("def int foo(var(int) argc, const(int[]) argv) {}");
 	auto ast = lp.parser.parseFunctionDecl();
 	std::ofstream z("test2.dot");
 	DotVisitor d(z);
@@ -123,8 +123,8 @@ UNITTEST(unary1) {
 
 UNITTEST(extern1) {
 	LexParse lp
-		("extern def int read(var a : int, var b : float);"
-		"extern def int write(var a : int, var b : float);");
+		("extern def int read(var(int) a, var(float) b);"
+		"extern def int write(var(int) a, var(float) b);");
 	auto ast = lp.parser.parseDecl();
 	StdOutVisitor v(std::cout);
 	std::ofstream z("test.dot");

@@ -28,21 +28,20 @@ UNITTEST(blockStmt1Test) {
 
 UNITTEST(typeTest1) {
 	std::vector<std::string> varDecls = {
-		"var constDelArr : int[] delegate(var : foo[]*) const []",
-		"var constDelArr : int[] function(var : foo[]*) const []",
-		"var constDelArr : int[] delegate(var : foo[] const*) const []",
-		"var constDelArr : int[] function(var : foo[] const*) const []",
-		"var name(1337)",
+		"var(int[] delegate(var(foo[]*))) constDelArr",
+		"var(int[] function(var(foo[]*))) constDelArr", 
+		"var(int[] delegate(var(foo[]))) constDelArr",
+		"var name = 1337",
 		"const name(1337 != 1337)",
-		"const name : int[](1337, 55)",
-		"var name : const int const * const []",
-		"var name : const int const * const [](127,666)"
-		"var name : int const * const []",
-		"var name : int const * const [](127,666)"
-		"var name : int const * []",
-		"var name : int const * [](127,666)"
-		"const name : const int const * const []",
-		"const name : const int const * const [](127,666)"
+		"const(int[]) name(1337, 55)",
+		"var(const int const * const []) name",
+		"var( const int const * const []) name(127,666)",
+		"var( int const * const []) name",
+		"var( int const * const []) name(127,666)",
+		"var( int const * []) name",
+		"var( int const * []) name(127,666)",
+		"const(const int const * const []) name",
+		"const(const int const * const []) name(127,666)"
 	};
 	for(auto& it : varDecls) {
 		auto ss = std::make_shared<std::stringstream>(it);
