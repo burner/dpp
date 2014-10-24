@@ -40,7 +40,16 @@ UNITTEST(varDecl1) {
 UNITTEST(varDecl2) {
 	LexParse lp
 		("var(int) bar;");
-	auto ast = lp.parser.parseStatement();
+	auto ast = lp.parser.parseVarDecl();
+	StdOutVisitor v(std::cout);
+	//ast->acceptVisitor(v);
+}
+
+UNITTEST(varDecl3) {
+	LexParse lp
+		("var(int[] delegate(var(foo[]*))) constDelArr");
+		//("var(int delegate()) constDelArr");
+	auto ast = lp.parser.parseVarDecl();
 	StdOutVisitor v(std::cout);
 	//ast->acceptVisitor(v);
 }

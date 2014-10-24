@@ -44,6 +44,7 @@
 		{ Name : "Lcurly", "Regex" : "{", "ConvertFunction" : "void" }
 		{ Name : "Rcurly", "Regex" : "}", "ConvertFunction" : "void" }
 		{ Name : "Dot", "Regex" : ".", "ConvertFunction" : "void" }
+		{ Name : "Delegate", "Regex" : "delegate", "ConvertFunction" : "void" }
 		{ Name : "Plusplus", "Regex" : "++", "ConvertFunction" : "void" }
 		{ Name : "Minusminux", "Regex" : "--", "ConvertFunction" : "void" }
 		{ Name : "Cast", "Regex" : "cast", "ConvertFunction" : "void" }
@@ -423,13 +424,15 @@
 			]
 		}
 		{ Name : "UnnamedArg", Expression : [
-			{ Rule : "Var ; Type(type) ", Id : "VarType"}
-			{ Rule : "Modifier ; Type(type) ", Id : "ModifierType"}
+			{ Rule : "Var ; Lparen ; Type(type) ; Rparen", Id : "VarType"}
+			{ Rule : "Modifier ; Lparen ; Type(type) ; Rparen", Id : "ModifierType"}
 			]
 		}
 		{ Name : "VarDecl", Expression : [
-			{ Rule : "VarDeclPrefix(varPrefix) ; VarDeclDirectInit(direct)", 
+			{ Rule : "VarDeclPrefix(varPrefix)", 
 				Id : "VarDecl"}
+			{ Rule : "VarDeclPrefix(varPrefix) ; VarDeclDirectInit(direct)", 
+				Id : "VarDeclInit"}
 			{ Rule : "ConstDeclPrefix(constPrefix) ; "\
 				"VarDeclDirectInit(direct)", Id : "ConstDeclDirect"}
 			]

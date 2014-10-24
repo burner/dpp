@@ -526,7 +526,7 @@ Token Lexer::nextToken() {
 						}
 					}
 				} else if(curInput == 'l') { // delegate
-					if(curInput == 'e') { 
+					if(getNextChar() == 'e') { 
 						if(getNextChar() == 'g') {
 							if(getNextChar() == 'a') {
 								if(getNextChar() == 't') {
